@@ -1,0 +1,17 @@
+{
+  "name": "bun-tc39-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot server.ts",
+    "start": "bun server.ts",
+    "build": "bun build.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0"
+  },
+  "dependencies": {
+    "typescript": "^5.9.0"
+  }
+}

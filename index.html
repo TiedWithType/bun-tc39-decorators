@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dekorator TC39 + Bun</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #16161a; color: #e8e8f0; }
+      body { margin: 0; min-height: 100dvh; display: grid; place-items: center; }
+      main { width: min(500px, calc(100% - 32px)); padding: 32px 0; }
+      h1 { font-size: 1.7rem; }
+      p { color: #b6b6c6; line-height: 1.6; }
+    </style>
+    <script type="module" src="./src/main.ts"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Dekorator TC39 w TypeScript</h1>
+      <p>Dwie niezależne instancje komponentu z Shadow DOM:</p>
+      <app-counter></app-counter>
+      <app-counter></app-counter>
+    </main>
+  </body>
+</html>

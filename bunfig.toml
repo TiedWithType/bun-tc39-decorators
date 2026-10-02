@@ -1,0 +1,2 @@
+[serve.static]
+plugins = ["./tc39.plugin.ts"]
