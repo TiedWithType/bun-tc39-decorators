@@ -1,404 +1,222 @@
-# Bun + TypeScript: dekoratory TC39 i Web Components
+# Bun + TypeScript TC39 — dekorator DEBUG z natywnym HMR
 
-Przykładowy projekt pokazujący, jak zbudować własny dekorator klasy `@Component`
-w TypeScript, zarejestrować Web Component i wyrenderować jego HTML oraz CSS
-w Shadow DOM. Frontend i serwer działają z Bun, bez Vite i bez frameworka UI.
+Projekt do sprawdzenia dekoratorów TC39 w **Bun z poprawką runtime HMR**.
+Dekorator `@DEBUG` weryfikuje argumenty `value` i `context` dla klasy,
+metody, pola i auto-accessora. Wynik pokazuje się w jednym `alert`, na
+stronie oraz w konsoli przeglądarki.
 
-Projekt zawiera także **obejście błędu dekoratorów TC39 w przeglądarkowym HMR
-Bun 1.4.2**. Plugin najpierw przetwarza TypeScript do JavaScript za pomocą
-kompilatora TypeScript, a następnie przekazuje wynik bundlerowi Bun.
+Serwer używa `development: { hmr: true }`. Kod TypeScript przetwarza sam
+Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 
-Na stronie znajdują się dwa liczniki. Każdy ma własny stan i własny Shadow DOM.
-Kliknięcie pierwszego licznika nie zmienia drugiego.
+**Poprawka Bun:** [patch w repo](patches/bun-hmr-tc39.patch).
+**Zgłoszenie upstream:** [oven-sh/bun #44463](https://github.com/oven-sh/bun/issues/44463).
 
-> `hmr: true` działa z tym obejściem, ale aktualizacja komponentu powoduje pełne
-> przeładowanie strony. Liczniki wracają wtedy do zera. Projekt nie implementuje
-> podmiany zarejestrowanych klas Custom Elements ani zachowywania stanu po edycji.
+## Szybki start — Termux
 
-## Wymagania
+Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
+`bun-tc39` jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
+(Android 9 lub nowszy). Architektura telefonu: `uname -m`.
 
-- Bun — przykład i obejście sprawdzono na **1.4.2**.
-- Przeglądarka obsługująca Custom Elements, Shadow DOM i prywatne pola klas.
-- Dostęp do rejestru pakietów podczas pierwszej instalacji.
+Projekt umieść w prywatnym katalogu Termuksa, np. pod `~`, a nie w `/sdcard`.
 
-Przeglądarka otrzymuje przetworzony JavaScript, więc nie musi natywnie obsługiwać
-składni dekoratorów TypeScript. TypeScript jest zależnością projektu;
-`@types/bun` dostarcza definicje typów do sprawdzania kodu.
+```sh
+cd ~
+git clone https://github.com/TiedWithType/bun-tc39-decorators.git
+cd bun-tc39-decorators
+bun-tc39 install
+bun-tc39 --watch server.ts
+```
 
-## Szybki start
+Otwórz **http://localhost:3000** w przeglądarce telefonu. Jeśli ta kompilacja
+jest zainstalowana jako `bun`, używaj `bun` zamiast `bun-tc39`.
 
-Pobierz repozytorium lub jego archiwum, a następnie w katalogu projektu wykonaj:
+Zmiana portu:
 
-```bash
+```sh
+PORT=3001 bun-tc39 --watch server.ts
+```
+
+Jeśli masz pobraną paczkę z binarką, instalację wykonaj z jej rozpakowanego
+katalogu:
+
+```sh
+sha256sum -c SHA256SUMS
+install -m 755 bun "$PREFIX/bin/bun-tc39"
+bun-tc39 --version
+bun-tc39 --revision
+```
+
+Binarka Androida nie jest zawarta w tym repozytorium. Znajduje się tu
+projekt diagnostyczny oraz patch do źródeł Bun.
+
+## Start na komputerze
+
+Zainstaluj lub zbuduj Bun zawierający poprawkę. Następnie:
+
+```sh
+git clone https://github.com/TiedWithType/bun-tc39-decorators.git
+cd bun-tc39-decorators
 bun install
 bun run dev
 ```
 
-Otwórz **http://localhost:3000**.
+Skrypty `dev` i `start` wywołują program o nazwie `bun`. Jeżeli poprawiona
+binarka ma nazwę `bun-tc39`, uruchamiaj bezpośrednio
+`bun-tc39 --watch server.ts`, jak w instrukcji Termuksa.
 
-Nie otwieraj `index.html` przez `file://`. Skrypt wskazany w HTML to plik `.ts`,
-który musi zostać przetworzony i udostępniony przez serwer Bun.
+## Oczekiwany wynik
 
-Komendy uruchamiaj z katalogu, w którym znajdują się `package.json` oraz
-`bunfig.toml`. To ważne dla załadowania pluginu.
-
-### Dostęp z telefonu lub innego komputera
-
-Serwer nasłuchuje na `0.0.0.0`. Na drugim urządzeniu w tej samej sieci użyj:
+Po załadowaniu strony pojawia się jeden alert zaczynający się od:
 
 ```text
-http://ADRES_IP_KOMPUTERA:3000
+DEBUG: WSZYSTKIE SPRAWDZENIA OK
 ```
 
-`localhost` na telefonie wskazuje sam telefon. Port 3000 musi być dostępny
-w zaporze komputera, a sieć musi pozwalać urządzeniom komunikować się ze sobą.
+Poniżej są wyniki dla wszystkich czterech rodzajów dekorowanych elementów.
 
-### Termux
+| Element | Oczekiwane `context.kind` | Oczekiwane `value` |
+| --- | --- | --- |
+| Klasa `Counter` | `class` | Konstruktor, czyli funkcja |
+| Metoda `increment` | `method` | Oryginalna funkcja metody |
+| Pole `count` | `field` | `undefined` |
+| Auto-accessor `score` | `accessor` | Obiekt z funkcjami `get` i `set` |
 
-Umieść projekt w katalogu domowym Termuxa, np. `~/projects/`, i uruchom te same
-komendy. Katalogi współdzielone Androida, takie jak `/sdcard`, mogą powodować
-problemy z instalacją pakietów i dowiązaniami. Projekt nie korzysta z wykrywania
-interfejsów sieciowych Vite.
+Wartość `2` z deklaracji `count = 2` **nie jest argumentem `value`
+dekoratora pola**. Inicjalizacja pola następuje później. Auto-accessor to
+składnia `accessor score = 5`, nie zwykła para getter/setter.
 
-## Dostępne komendy
+Raport pozostaje widoczny na stronie. Przycisk **Pokaż alert ponownie**
+pokazuje ten sam wynik. W konsoli wpis `@DEBUG` zawiera rzeczywiste
+`value`, `context` oraz raport dla danego elementu.
 
-| Komenda | Działanie |
-| --- | --- |
-| `bun install` | Instaluje zależności. |
-| `bun run dev` | Uruchamia `bun --hot server.ts`. |
-| `bun run start` | Uruchamia serwer bez flagi `--hot`. |
-| `bun run typecheck` | Sprawdza typy przez `tsc --noEmit`. |
-| `bun run build` | Tworzy statyczną wersję w `dist/` z tym samym pluginem TC39. |
+Projekt nie zakłada kolejności wywołań dekoratorów: sprawdza obecność
+wszystkich czterech rodzajów. Kolejność wpisów w raporcie może być inna
+niż kolejność deklaracji w kodzie.
 
-`start` samo w sobie nie włącza trybu produkcyjnego. Serwer wyłącza opcję
-`development`, kiedy `NODE_ENV` wynosi `production`.
+## Co sprawdza DEBUG
 
-Na systemach z powłoką zgodną z Bash możesz wybrać inny port:
+Dla każdego wywołania:
 
-```bash
-PORT=8080 bun run dev
-```
+- czy `context` jest obiektem;
+- czy `context.name` jest stringiem lub symbolem;
+- czy `context.addInitializer` jest funkcją;
+- czy `context.metadata` jest obiektem;
+- czy `value` ma postać właściwą dla danego rodzaju elementu.
 
-Albo uruchomić serwer w trybie produkcyjnym:
+Dla elementów klasy sprawdza też:
 
-```bash
-NODE_ENV=production bun run start
-```
+- booleany `context.static` i `context.private`;
+- funkcję `context.access.has`;
+- `context.access.get` dla odczytywalnych elementów;
+- `context.access.set` dla pól, accessorów i setterów.
 
-To serwer korzystający ze źródeł i bundlowania przy uruchomieniu. W takim
-wariancie TypeScript nadal musi być zainstalowany, ponieważ plugin używa go
-podczas przetwarzania frontendu.
+Funkcje `context.access` nie są wywoływane podczas dekorowania, ponieważ
+instancja jeszcze nie istnieje. Sprawdzana jest ich obecność i typ.
+Projekt weryfikuje obiekt `metadata` dostarczany przez Bun; nie wymaga
+od przeglądarki własnej implementacji `Symbol.metadata`.
+
+`DEBUG` zwraca `void`, więc zachowuje oryginalny element bez zmian.
+Po utworzeniu instancji projekt dodatkowo sprawdza:
+
+1. Pole `count` ma początkowo wartość `2`.
+2. `increment()` zwraca `3` i aktualizuje właściwą instancję.
+3. Accessor odczytuje `5`, a po zapisie zwraca `9`.
+4. Raporty zawierają wszystkie cztery dekorowane elementy.
+
+To projekt diagnostyczny, nie pełny zestaw testów zgodności specyfikacji TC39.
 
 ## Pliki projektu
 
-| Plik | Odpowiedzialność |
+| Plik | Rola |
 | --- | --- |
-| `index.html` | Dokument strony i dwie instancje `<app-counter>`. |
-| `src/main.ts` | Import komponentu uruchamiający jego dekorator. |
-| `src/component.ts` | Dekorator `@Component`, definicje komponentów i klasa bazowa. |
-| `src/counter.ts` | Licznik, szablon, style, stan i obsługa kliknięć. |
-| `server.ts` | Serwer HTTP Bun, konfiguracja środowiska i odpowiedź 404. |
-| `tc39.plugin.ts` | Przetwarzanie dekoratorów przez TypeScript przed bundlerem Bun. |
-| `bunfig.toml` | Włączenie pluginu dla serwera frontendowego. |
-| `build.ts` | Statyczny build z pluginem TC39. |
-| `tsconfig.json` | Konfiguracja sprawdzania typów i nowych dekoratorów. |
-| `package.json` | Zależności i skrypty. |
-| `package-lock.json` | Lockfile wygenerowany przy instalacji zależności przez npm. |
+| `src/debug.ts` | Dekorator `DEBUG`, sprawdzenia argumentów i zebrane raporty |
+| `src/main.ts` | Klasa `Counter`, sprawdzenie instancji i wyświetlenie alertu |
+| `index.html` | Strona, przycisk, raport i obsługa błędów runtime |
+| `server.ts` | `Bun.serve`, entry point HTML i `hmr: true` |
+| `tsconfig.json` | Standardowe dekoratory, ścisłe sprawdzanie typów |
+| `patches/bun-hmr-tc39.patch` | Poprawka źródeł Bun z dwoma testami regresji |
 
-`node_modules/` i `dist/` są pomijane przez Git. `bun install` może utworzyć
-własny lockfile `bun.lock`; jeżeli go używasz, dodaj go do repozytorium po
-instalacji.
+W `tsconfig.json` ustawiono `experimentalDecorators: false`.
+Projekt nie korzysta z dawnej sygnatury TypeScript
+`target, propertyKey, descriptor`.
 
-## Jak działa dekorator TC39
+## HMR, --watch i alert
 
-Nowe dekoratory otrzymują dekorowaną wartość oraz obiekt kontekstu.
-W przypadku dekoratora klasy są to konstruktor klasy i `ClassDecoratorContext`.
+`bun --watch server.ts` restartuje proces serwera po zmianie obserwowanych
+plików. `development: { hmr: true }` obsługuje zmiany kodu strony przez
+dev server Bun. Są to dwa odrębne mechanizmy.
 
-Fabryka `Component()` przyjmuje konfigurację i zwraca właściwy dekorator:
+Projekt nie deklaruje `import.meta.hot.accept()`. Po zmianie modułu Bun
+może przeładować stronę w całości; wtedy alert pokazuje się ponownie.
+To pozwala ocenić natywne dekoratory w bundlu HMR już podczas pierwszego
+załadowania, a także po zmianie kodu.
 
-```ts
-@Component({
-  selector: "app-counter",
-  template: `<button type="button">Dodaj +1</button>`,
-  styles: `:host { display: block; }`,
-})
-export class CounterComponent extends ComponentElement {}
-```
+Dla szybkiej próby zmień tekst raportu lub nazwę klasy, zapisz plik
+i sprawdź aktualny alert. Zmiana `count = 2` wymaga również aktualizacji
+oczekiwanych wartości w `runtimeChecks`, jeśli chcesz uzyskać wynik OK.
 
-Konfiguracja zawiera:
+## Gdy coś nie działa
 
-| Opcja | Znaczenie |
-| --- | --- |
-| `selector` | Nazwa Custom Element, np. `app-counter`. |
-| `template` | Zaufany fragment HTML renderowany wewnątrz Shadow DOM. |
-| `styles` | Opcjonalny CSS umieszczany w Shadow DOM. |
-
-Typ selektora wymaga myślnika, ale pełną poprawność nazwy sprawdza przeglądarka
-przy wywołaniu `customElements.define()`.
-
-Dekorator korzysta z `context.addInitializer()`. Inicjalizator klasy wykonuje
-się po inicjalizacji jej pól statycznych. Jego `this` wskazuje finalną klasę,
-co ma znaczenie także wtedy, gdy na klasie występują inne dekoratory.
-
-Definicja komponentu trafia do `WeakMap`, gdzie kluczem jest konstruktor klasy.
-Następnie dekorator rejestruje konstruktor:
-
-```ts
-customElements.define(options.selector, this);
-```
-
-Nie jest potrzebna dodatkowa ręczna rejestracja w `main.ts`. Sam import pliku
-komponentu wystarcza do wykonania dekoratora.
-
-### Dlaczego `experimentalDecorators: false`?
-
-Opcja `experimentalDecorators: true` wybiera starszy mechanizm dekoratorów
-TypeScript. Ten projekt korzysta z nowych dekoratorów zgodnych z propozycją
-TC39 obsługiwaną przez TypeScript, więc ustawia tę opcję na `false`.
-
-Nie włączaj `emitDecoratorMetadata`: przykład nie korzysta z metadanych
-emitowanych przez starszy mechanizm ani z biblioteki `reflect-metadata`.
-
-Dekorator w tym projekcie obsługuje klasy komponentów. Nie implementuje
-dekoratorów parametrów, dependency injection ani mechanizmów Angulara.
-
-## Shadow DOM i cykl życia
-
-`ComponentElement` tworzy otwarty Shadow Root:
-
-```ts
-protected readonly root = this.attachShadow({ mode: "open" });
-```
-
-Po podłączeniu elementu do dokumentu `connectedCallback()` pobiera definicję
-z `WeakMap`, renderuje szablon i dodaje element `<style>`.
-
-Style strony nie wybierają bezpośrednio elementów wewnętrznych Shadow DOM.
-Komponent może korzystać z dziedziczonych właściwości i zmiennych CSS;
-`:host` pozwala stylować sam element komponentu.
-
-Licznik rozszerza cykl życia klasy bazowej:
-
-1. Wywołuje `super.connectedCallback()`, aby wyrenderować szablon.
-2. Tworzy `AbortController` dla listenerów aktualnego podłączenia.
-3. Pokazuje aktualny stan licznika.
-4. Podpina listener kliknięcia przycisku.
-5. W `disconnectedCallback()` usuwa listenery przez `abort()`.
-
-Ponowne podłączenie tej samej instancji do DOM zachowuje jej prywatne pole
-`#count`. Pełne przeładowanie strony tworzy nowe instancje i zeruje stan.
-
-### Dane użytkownika
-
-`template` jest renderowany przez `innerHTML` i powinien zawierać zaufany kod
-aplikacji. Dynamiczne teksty, np. wartość licznika, ustawiaj przez
-`textContent`. Nie wstawiaj do szablonu niesprawdzonych danych z formularzy
-lub zewnętrznych źródeł.
-
-## Dodanie własnego komponentu
-
-Utwórz `src/hello-world.ts`:
-
-```ts
-import { Component, ComponentElement } from "./component";
-
-@Component({
-  selector: "hello-world",
-  template: `<p>Cześć, Kamil!</p>`,
-  styles: `
-    :host { display: block; padding: 16px; }
-    p { color: #9575cd; }
-  `,
-})
-export class HelloWorldComponent extends ComponentElement {}
-```
-
-Dodaj import w `src/main.ts`:
-
-```ts
-import "./counter";
-import "./hello-world";
-```
-
-Następnie umieść element w `index.html`:
-
-```html
-<hello-world></hello-world>
-```
-
-Możesz utworzyć wiele instancji tego samego elementu. Każda dostaje własną
-instancję klasy i własny Shadow Root. Nie rejestruj dwóch różnych klas pod
-identycznym selektorem.
-
-Jeśli nadpisujesz `connectedCallback()`, wywołaj metodę klasy bazowej przed
-wyszukiwaniem elementów szablonu:
-
-```ts
-override connectedCallback(): void {
-  super.connectedCallback();
-  const paragraph = this.root.querySelector("p");
-  if (paragraph) paragraph.textContent = "Komponent został podłączony";
-}
-```
-
-## Błąd Bun: dekoratory a przeglądarkowe HMR
-
-W sprawdzonym przykładzie z Bun 1.4.2 i `development: { hmr: true }` kod
-frontendu wygenerowany przez Bun wywoływał:
-
-```js
-import_bun_wrap.__decoratorStart(_base);
-```
-
-Runtime HMR nie udostępniał tej funkcji. Rezultatem był błąd:
+Jeśli pojawi się:
 
 ```text
 TypeError: import_bun_wrap.__decoratorStart is not a function
 ```
 
-Błąd występował już podczas pierwszego załadowania strony, przed rejestracją
-Custom Element. Sam warunek `customElements.get()` nie naprawia tego problemu.
+sprawdź, czy serwer rzeczywiście uruchamia poprawiona binarka. Samo
+pobranie pliku `.patch` do tego projektu nie zmienia zainstalowanego Bun.
+Patch stosuje się w **repozytorium źródeł Bun**, po czym trzeba zbudować binarkę.
 
-### Co zmienia plugin?
+Obsługa błędów w `index.html` jest instalowana przed modułem aplikacji.
+Próbuje pokazać alert `BŁĄD RUNTIME: ...` zarówno dla błędów JavaScript,
+jak i nieobsłużonych odrzuceń Promise. Gdy serwer nie dostarczy skryptu,
+sprawdź także terminal i konsolę przeglądarki.
 
-`tc39.plugin.ts` przechwytuje pliki `.ts` przez `build.onLoad()` i przetwarza
-je za pomocą `typescript.transpileModule()`.
+## Zastosowanie patcha w źródłach Bun
 
-TypeScript emituje własne helpery, m.in. `__esDecorate` i `__runInitializers`.
-Plugin zwraca wynik jako JavaScript (`loader: "js"`). Bundler Bun nie musi już
-transformować składni dekoratora TC39 ani odwoływać się do brakujących helperów
-TC39 w `bun:wrap`.
+Patch był budowany i testowany na commicie
+`bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (źródła Bun 1.4.3).
+Zastosowanie na innych rewizjach wymaga osobnej weryfikacji.
 
-Dla serwera plugin włącza `bunfig.toml`:
+W osobnym katalogu źródeł Bun:
 
-```toml
-[serve.static]
-plugins = ["./tc39.plugin.ts"]
+```sh
+git clone https://github.com/oven-sh/bun.git bun-source
+cd bun-source
+git checkout bc7a813b10b6ef8accc00c931b9a501331ac8c5c
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/72304f8f6f1d85d4d2631e43f3d55339eb41c492/patches/bun-hmr-tc39.patch -o bun-hmr-tc39.patch
+git apply --check bun-hmr-tc39.patch
+git apply bun-hmr-tc39.patch
+bun bd test test/bake/dev/bundle.test.ts -t "TC39 decorators"
 ```
 
-Statyczny build uruchamiany przez `build.ts` przekazuje ten sam plugin do
-`Bun.build()`. Obie ścieżki korzystają więc z tej samej transformacji.
+Budowanie Bun wymaga kompletnego toolchainu opisanego w jego repozytorium.
+Przeprowadzona kompilacja korzystała z Clang 23.1.2 oraz
+Rust nightly-2026-09-15. Kompilacja dla Androida używała dodatkowo NDK r27c,
+profilu `android-release` i API 28.
 
-To **obejście w projekcie**, a nie poprawka kodu źródłowego lub binarki Bun.
-Nie ma gwarancji, że ten sam błąd występuje we wszystkich wersjach Bun.
+Poprawka rejestruje w syntetycznym module `bun:wrap` istniejące helpery
+TC39 oraz helpery pól i metod prywatnych, potrzebne m.in. do obniżania
+składni dekorowanych auto-accessorów. Aktualizuje też deklaracje modułu.
 
-### Dlaczego po edycji następuje pełne przeładowanie?
+## Weryfikacja
 
-Rejestr Custom Elements nie pozwala usunąć definicji ani podmienić konstruktora
-zarejestrowanego pod daną nazwą. HMR może ponownie wykonać moduł komponentu,
-co prowadziłoby do błędu ponownej rejestracji.
+- Projekt `DEBUG` przeszedł sprawdzanie typów TypeScript.
+- Bundle HMR z poprawionego Bun przeszedł sprawdzenie czterech dekoratorów,
+  początkowego alertu oraz przycisku w emulowanym DOM (happy-dom).
+- Dwa testy regresji patcha przeszły na zbudowanym Bun dla Linux x86_64:
+  klient i serwer, również po aktualizacji źródła.
+- Kompilacja Android ARM64 zakończyła się powodzeniem i przeszła statyczne
+  kontrole binarki. Nie była uruchamiana na telefonie ani w emulatorze Androida.
 
-Dekorator wykrywa istniejący selektor. W środowisku HMR wywołuje
-`window.location.reload()` i kończy inicjalizator bez ponownego `define()`.
-Nowy dokument ma świeży rejestr Custom Elements i ładuje aktualny kod.
-Poza HMR powtórna rejestracja zgłasza czytelny błąd.
+Sprawdzanie typów po instalacji zależności:
 
-Nie dodawaj `import.meta.hot.accept()` do tych komponentów bez zaprojektowania
-pełnego mechanizmu aktualizacji. Samo pominięcie `define()` zachowałoby starą
-klasę zamiast zastosować zmienioną implementację.
-
-### `--hot`, `--watch` i `hmr: true`
-
-| Mechanizm | Dotyczy | Zachowanie |
-| --- | --- | --- |
-| `bun --hot server.ts` | Runtime serwera | Przeładowuje kod bez restartowania całego procesu; globalny stan może przetrwać. |
-| `bun --watch server.ts` | Runtime serwera | Restartuje proces po zmianie śledzonych plików. |
-| `development: { hmr: true }` | Frontend serwowany przez Bun | Włącza runtime HMR i komunikację zmian z przeglądarką. |
-
-W tym projekcie skrypt `dev` używa `--hot`, a serwer włącza frontendowe HMR.
-Są to dwa osobne mechanizmy. Możesz uruchomić `bun --watch server.ts`, jeżeli
-wolisz pełny restart serwera po zmianach.
-
-## Sprawdzenie typów i build
-
-```bash
-bun run typecheck
-bun run build
+```sh
+bun x --bun tsc --noEmit
 ```
 
-`transpileModule()` przetwarza składnię pojedynczych plików, ale nie sprawdza
-semantycznie całego projektu. Dlatego komenda `typecheck` jest osobnym krokiem.
+Jeżeli używasz nazwy `bun-tc39`:
 
-Pliki z `dist/` można udostępnić dowolnym serwerem statycznym. W takim wariancie
-odbiorca strony nie potrzebuje Bun ani TypeScript — otrzymuje HTML i JavaScript.
-
-Używaj `bun run build`, aby wykonać build z pluginem. Bezpośrednie
-`bun build index.html` nie jest skryptem skonfigurowanym w tym projekcie.
-
-## Zakres przeprowadzonej walidacji
-
-Podczas przygotowania przykładu sprawdzono:
-
-- typy całego projektu przez `tsc --noEmit`;
-- statyczny build z pluginem;
-- wykonanie dekoratora i rejestrację Custom Element;
-- renderowanie HTML i CSS w Shadow DOM;
-- niezależny stan dwóch liczników i obsługę kliknięć;
-- odłączenie i ponowne podłączenie komponentu w pierwotnym przykładzie;
-- aktualizację TS przez rzeczywisty WebSocket serwera Bun;
-- żądanie przeładowania i nowy dokument z aktualnym kodem;
-- działanie kliknięcia w statycznym bundlu.
-
-Sprawdzenia DOM wykonywano w **happy-dom**. W teście aktualizacji zliczano
-żądanie `location.reload()` i tworzono nowy dokument z aktualnym bundłem.
-Pełny test w Chromium nie został wykonany. Testy pomocnicze użyte podczas
-przygotowania nie są częścią tego repozytorium; powyższa lista opisuje wykonane
-sprawdzenia, a nie zestaw testów dostępny przez skrypt `test`.
-
-## Rozwiązywanie problemów
-
-### Nadal pojawia się `__decoratorStart is not a function`
-
-Sprawdź, czy uruchamiasz serwer z katalogu projektu, czy istnieje `bunfig.toml`
-i czy jego ścieżka wskazuje `./tc39.plugin.ts`. Zainstaluj zależności przez
-`bun install`. Po zmianie konfiguracji pluginu zatrzymaj i uruchom serwer ponownie.
-
-### `Cannot find package "typescript"`
-
-Wykonaj `bun install`. Plugin używa TypeScript również w serwerze uruchamianym
-w trybie produkcyjnym, dlatego pakiet znajduje się w `dependencies`.
-
-### Nazwa komponentu jest już zarejestrowana
-
-Sprawdź, czy dwie różne klasy nie mają identycznego `selector` i czy komponent
-nie jest rejestrowany dodatkowo ręcznie. W środowisku bez HMR duplikat powinien
-zgłaszać błąd, zamiast ukrywać problem konfiguracji.
-
-### Po zapisie kodu licznik wraca do zera
-
-To oczekiwane: strona jest przeładowywana, aby zastosować nową klasę komponentu.
-Projekt nie zachowuje stanu w `sessionStorage`, `localStorage` ani bazie danych.
-
-### Port jest zajęty
-
-Zatrzymaj poprzednią instancję serwera lub uruchom przykład z innym `PORT`.
-
-### Style z `index.html` nie zmieniają przycisku
-
-Przycisk znajduje się w Shadow DOM. Umieść jego style w opcji `styles`
-komponentu. Do stylowania elementu zewnętrznego służy `:host`.
-
-### Edytor pokazuje inne błędy dekoratorów
-
-Sprawdź, czy edytor korzysta z TypeScript zainstalowanego w projekcie i czy
-odczytuje właściwy `tsconfig.json`. Nie włączaj starszego mechanizmu
-`experimentalDecorators: true`.
-
-## Ograniczenia przykładu
-
-- Plugin obsługuje `.ts`; projekt nie demonstruje TSX ani JSX.
-- Szablony i CSS są stringami w konfiguracji dekoratora.
-- Nie ma reaktywności, routingu, DI ani dekoratorów właściwości.
-- Aktualizacja komponentu przeładowuje stronę i zeruje jej stan.
-- Implementacja nie jest rozbudowanym frameworkiem ani pełnym zamiennikiem Angulara.
-
-## Dokumentacja źródłowa
-
-- [TypeScript 5.0 — nowe dekoratory](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html)
-- [Propozycja TC39 Decorators](https://github.com/tc39/proposal-decorators)
-- [Bun — fullstack dev server](https://bun.sh/docs/bundler/fullstack)
-- [Bun — frontendowe HMR](https://bun.sh/docs/bundler/hot-reloading)
-- [Bun — pluginy bundlera](https://bun.sh/docs/bundler/plugins)
-- [Bun — tryby `--hot` i `--watch`](https://bun.sh/docs/runtime/watch-mode)
-- [MDN — Custom Elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)
-- [MDN — Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM)
+```sh
+bun-tc39 x --bun tsc --noEmit
+```
