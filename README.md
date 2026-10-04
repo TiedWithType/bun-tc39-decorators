@@ -8,7 +8,12 @@ stronie oraz w konsoli przeglądarki.
 Serwer używa `development: { hmr: true }`. Kod TypeScript przetwarza sam
 Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 
-**Poprawka Bun:** [patch w repo](patches/bun-hmr-tc39.patch).
+**Patch zbiorczy dla Bun 1.4.3:**
+[bun-1.4.3-termux-combined.patch](patches/bun-1.4.3-termux-combined.patch)
+łączy poprawki HMR/dekoratorów TC39, CWD Androida i otwierania przeglądarki
+w Termuksie. Nakładaj patch zbiorczy albo patche osobne.
+
+**Osobna poprawka HMR:** [patch w repo](patches/bun-hmr-tc39.patch).
 **Zgłoszenie upstream:** [oven-sh/bun #44463](https://github.com/oven-sh/bun/issues/44463).
 
 **Poprawka Termux / współdzielonej pamięci:**
@@ -16,13 +21,21 @@ Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 [instrukcja i diagnostyka](docs/termux-cwd.md) ·
 [upstream #44565](https://github.com/oven-sh/bun/issues/44565).
 
+**Poprawka skrótu przeglądarki:**
+[patch](patches/bun-termux-open-browser.patch) ·
+[upstream #44570](https://github.com/oven-sh/bun/issues/44570).
+
 ## Szybki start — Termux
 
 Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
 `bun-tc39` jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
 (Android 9 lub nowszy). Architektura telefonu: `uname -m`.
 
-Projekt umieść w prywatnym katalogu Termuksa, np. pod `~`, a nie w `/sdcard`.
+Ostatni wspólny build ma wersję `1.4.3` i revision `1.4.3+f5d709368`.
+Przeszedł kompilację i kontrole statyczne ELF; test na telefonie pozostaje
+do wykonania.
+
+Projekt diagnostyczny umieść w prywatnym katalogu Termuksa, np. pod `~`.
 
 ```sh
 cd ~
@@ -52,7 +65,7 @@ bun-tc39 --revision
 ```
 
 Binarka Androida nie jest zawarta w tym repozytorium. Znajduje się tu
-projekt diagnostyczny oraz patch do źródeł Bun.
+projekt diagnostyczny, patche osobne oraz patch zbiorczy do źródeł Bun.
 
 ## Start na komputerze
 
@@ -139,7 +152,9 @@ To projekt diagnostyczny, nie pełny zestaw testów zgodności specyfikacji TC39
 | `index.html` | Strona, przycisk, raport i obsługa błędów runtime |
 | `server.ts` | `Bun.serve`, entry point HTML i `hmr: true` |
 | `tsconfig.json` | Standardowe dekoratory, ścisłe sprawdzanie typów |
-| `patches/bun-hmr-tc39.patch` | Poprawka źródeł Bun z dwoma testami regresji |
+| `patches/bun-hmr-tc39.patch` | Poprawka HMR z dwoma testami regresji |
+| `patches/bun-termux-open-browser.patch` | Obsługa narzędzi Termuksa dla skrótu `o + Enter` |
+| `patches/bun-1.4.3-termux-combined.patch` | Trzy poprawki razem: HMR, CWD i otwieranie przeglądarki |
 
 W `tsconfig.json` ustawiono `experimentalDecorators: false`.
 Projekt nie korzysta z dawnej sygnatury TypeScript
@@ -177,32 +192,56 @@ Próbuje pokazać alert `BŁĄD RUNTIME: ...` zarówno dla błędów JavaScript,
 jak i nieobsłużonych odrzuceń Promise. Gdy serwer nie dostarczy skryptu,
 sprawdź także terminal i konsolę przeglądarki.
 
-## Zastosowanie patcha w źródłach Bun
+## Zastosowanie patcha zbiorczego w źródłach Bun
 
-Patch był budowany i testowany na commicie
-`bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (źródła Bun 1.4.3).
-Zastosowanie na innych rewizjach wymaga osobnej weryfikacji.
+Sprawdzona baza: `bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (Bun 1.4.3).
+Patch zbiorczy zawiera wszystkie trzy poprawki. Stosuj go na czystej bazie;
+nie nakładaj go dodatkowo na źródła z nałożonymi patchami osobnymi.
+Na innej rewizji potrzebna jest osobna weryfikacja.
 
-W osobnym katalogu źródeł Bun:
+W osobnym katalogu **źródeł Bun**:
 
 ```sh
 git clone https://github.com/oven-sh/bun.git bun-source
 cd bun-source
 git checkout bc7a813b10b6ef8accc00c931b9a501331ac8c5c
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/72304f8f6f1d85d4d2631e43f3d55339eb41c492/patches/bun-hmr-tc39.patch -o bun-hmr-tc39.patch
-git apply --check bun-hmr-tc39.patch
-git apply bun-hmr-tc39.patch
-bun bd test test/bake/dev/bundle.test.ts -t "TC39 decorators"
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.3-termux-combined.patch -o ../bun-1.4.3-termux-combined.patch
+git apply --check ../bun-1.4.3-termux-combined.patch
+git apply ../bun-1.4.3-termux-combined.patch
+git diff --check
 ```
 
-Budowanie Bun wymaga kompletnego toolchainu opisanego w jego repozytorium.
-Przeprowadzona kompilacja korzystała z Clang 23.1.2 oraz
-Rust nightly-2026-09-15. Kompilacja dla Androida używała dodatkowo NDK r27c,
-profilu `android-release` i API 28.
+Testy na obsługiwanym hoście po przygotowaniu toolchainu Bun:
 
-Poprawka rejestruje w syntetycznym module `bun:wrap` istniejące helpery
-TC39 oraz helpery pól i metod prywatnych, potrzebne m.in. do obniżania
-składni dekorowanych auto-accessorów. Aktualizuje też deklaracje modułu.
+```sh
+bun bd test test/bake/dev/bundle.test.ts -t "TC39 decorators"
+bun bd test test/cli/run/run_command.test.ts
+```
+
+Test CWD wymaga Androida i montowania odtwarzającego błąd niedostępnego
+rodzica; na innych platformach jest pomijany. Szczegóły:
+[docs/termux-cwd.md](docs/termux-cwd.md).
+
+Przed kompilacją zapisz zastosowane zmiany jako commit w checkoutcie Bun.
+Build pobiera revision z HEAD, więc commit powinien zawierać wszystkie patche.
+Pełny release Android ARM64 z Clang 23.1.2, Rust nightly-2026-09-15 i NDK r27c:
+
+```sh
+bun scripts/build.ts --profile=release --os=linux --arch=aarch64 \
+  --abi=android --android-ndk=/absolutna/sciezka/android-ndk-r27c \
+  --build-dir=build/android-aarch64 --canary=off -j2
+```
+
+Gotowa binarka: `build/android-aarch64/bun`, API 28+. Ostatni wspólny build
+powstał z lokalnego commita źródeł
+`f5d709368d494b003efe6cb40fc9007ff852f26d`. Jego `--revision` zawiera
+`1.4.3+f5d709368`; nowy commit utworzony samodzielnie będzie miał własną rewizję.
+Metadane: [build-info.json](verification/termux-open-browser/build-info.json).
+
+Poprawka HMR rejestruje helpery TC39 oraz pól i metod prywatnych w module
+`bun:wrap`. CWD obsługuje niedostępnego rodzica na Androidzie. Poprawka skrótu
+wybiera `termux-open-url`, a następnie `xdg-open` z PATH i raportuje błędy
+uruchomienia. Nie wywołuje bezpośrednio `/system/bin/am`.
 
 ## Weryfikacja
 
@@ -227,25 +266,34 @@ bun-tc39 x --bun tsc --noEmit
 ```
 
 
-## Patche Bun: dekoratory i współdzielona pamięć Androida
+## Patche Bun: HMR, CWD i przeglądarka w Termuksie
 
 | Patch | Co naprawia | Zgłoszenie |
 | --- | --- | --- |
 | [bun-hmr-tc39.patch](patches/bun-hmr-tc39.patch) | Brak helperów TC39 w runtime HMR klienta i serwera | [#44463](https://github.com/oven-sh/bun/issues/44463) |
-| [bun-termux-cwd.patch](patches/bun-termux-cwd.patch) | CouldntReadCurrentDirectory dla dostępnego projektu pod /storage/emulated/0, gdy rodzic zwraca ENOENT | [#44565](https://github.com/oven-sh/bun/issues/44565) |
+| [bun-termux-cwd.patch](patches/bun-termux-cwd.patch) | CouldntReadCurrentDirectory przy niedostępnym rodzicu dostępnego projektu w pamięci współdzielonej Androida | [#44565](https://github.com/oven-sh/bun/issues/44565) |
+| [bun-termux-open-browser.patch](patches/bun-termux-open-browser.patch) | SecurityException z `/system/bin/am` po `o + Enter` | [#44570](https://github.com/oven-sh/bun/issues/44570) |
+| [bun-1.4.3-termux-combined.patch](patches/bun-1.4.3-termux-combined.patch) | Wszystkie trzy poprawki w jednym patchu | Powyższe zgłoszenia |
 
-Oba patche można nałożyć na źródła Bun w rewizji
-`bc7a813b10b6ef8accc00c931b9a501331ac8c5c`. Projekt DEBUG z HMR wymaga poprawki
-dekoratorów; sam patch CWD rozwiązuje inny problem. Szczegóły pobrania,
-wspólnego nakładania i pełnej kompilacji dla Androida:
-[docs/termux-cwd.md](docs/termux-cwd.md).
+Zalecany wspólny wariant to **patch zbiorczy**. Osobne patche pozwalają
+wybrać pojedynczą poprawkę. Wszystkie odnoszą się do bazy
+`bc7a813b10b6ef8accc00c931b9a501331ac8c5c`.
 
-Do repo dodano również:
+Narzędzia i wyniki:
 
-- [tools/check-shared-storage.sh](tools/check-shared-storage.sh): próbę uruchomienia trzech poleceń w tymczasowym projekcie na telefonie;
-- [tools/verify-ancestor-policy.py](tools/verify-ancestor-policy.py): wyizolowany sprawdzian warunku resolvera na hoście Linux;
-- [wyniki weryfikacji CWD](verification/termux-cwd/results.md) i [metadane buildu](verification/termux-cwd/build-info.json).
+- [tools/check-shared-storage.sh](tools/check-shared-storage.sh): test CWD na telefonie.
+- [tools/verify-ancestor-policy.py](tools/verify-ancestor-policy.py): test warunku resolvera na hoście.
+- [tools/verify-opener.mjs](tools/verify-opener.mjs): sprawdzenia rzeczywistego bloku skrótu ze źródeł z zastąpionymi API procesu.
+- [Wyniki skrótu](verification/termux-open-browser/opener-source-checks.log): 9/9 sprawdzeń kodu, bez uruchamiania Androida.
+- [Kontrola binarki](verification/termux-open-browser/binary-check.log) i [metadane wspólnego buildu](verification/termux-open-browser/build-info.json).
 
-Pełny build Android ARM64 z patchem CWD przeszedł. Nowa binarka CWD nie była
-uruchamiana na telefonie. Wyniki kompilacji i statycznej kontroli ELF są
-oddzielone w dokumentacji od oczekiwanego testu działania na urządzeniu.
+Weryfikator skrótu uruchom z checkoutu tego projektu, podając ścieżkę
+poprawionych źródeł Bun:
+
+```sh
+node tools/verify-opener.mjs ../bun-source/src/js/internal/html.ts
+```
+
+Pełny build z trzema patchami i kontrole ELF przeszły. Binarka nie była
+uruchamiana na telefonie ani w emulatorze. Testy kodu ze zastąpionymi API
+nie potwierdzają działania ActivityManager na konkretnym urządzeniu.
