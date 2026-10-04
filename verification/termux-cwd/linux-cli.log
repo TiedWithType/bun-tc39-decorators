@@ -1,0 +1,20 @@
+[ninja] could not fetch bun-ninja-5ecd8831 (Failed to download after 1 attempts: https://github.com/oven-sh/ninja/releases/download/bun-ninja-5ecd8831/bun-ninja-linux-x64.zip: The operation timed out.); building with the ninja on PATH, without Rust pipelining
+bun test v1.4.3 (bc7a813b1)
+
+test/cli/run/run_command.test.ts:
+(pass) bun > should error with missing script [169.61ms]
+(pass) bun > an empty-string script value is not a runnable script [144.90ms]
+(skip) [windows] A file in drive root runs
+(pass) a script killed by Ctrl+C stops bun run (--shell=bun) [199.04ms]
+(pass) Ctrl+C is left to the script and bun run reports its exit (--shell=bun) [292.89ms]
+(pass) Ctrl+C is left to the script and bun run reports its exit (--shell=system) [243.83ms]
+(pass) Ctrl+C is left to the script and bun run reports its exit (<bin>) [230.63ms]
+(pass) a script killed by Ctrl+C stops bun run (--shell=system) [248.58ms]
+(pass) a script killed by Ctrl+C stops bun run (<bin>) [227.09ms]
+(skip) package scripts run beneath opaque Android shared-storage ancestors
+
+ 8 pass
+ 2 skip
+ 0 fail
+ 24 expect() calls
+Ran 10 tests across 1 file. [2.86s]

@@ -1,0 +1,17 @@
+[1181/1189] cxx obj/codegen/JSSink.cpp.o
+[1182/1189] cxx obj/codegen/GeneratedSocketConfigHandlers.cpp.o
+[1183/1189] cxx obj/codegen/GeneratedSocketConfig.cpp.o
+[1184/1189] cxx obj/codegen/GeneratedSSLConfig.cpp.o
+[1185/1189] cxx obj/codegen/GeneratedFakeTimersConfig.cpp.o
+[1186/1189] link bun-profile
+[1187/1189] strip bun
+[1188/1189] check bun-profile exports, dynamic deps, initializers, hardening
+[check] bun-profile 686 exported symbols (402ms)
+[check] bun-profile 3 shared libraries (1ms)
+[check] bun-profile 389 imported symbols (16ms)
+[check] bun-profile 3 static initializers (1.6s)
+[check] bun-profile 3 hardening properties (1ms)
+[check] bun-profile 9 debug sections (0ms)
+[1189/1189] check bun-profile link inputs for duplicate definitions
+[check] bun-profile 0 duplicate strong symbols (3.6s)
+[build] done

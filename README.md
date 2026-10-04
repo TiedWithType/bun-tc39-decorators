@@ -11,6 +11,11 @@ Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 **Poprawka Bun:** [patch w repo](patches/bun-hmr-tc39.patch).
 **Zgłoszenie upstream:** [oven-sh/bun #44463](https://github.com/oven-sh/bun/issues/44463).
 
+**Poprawka Termux / współdzielonej pamięci:**
+[patch CWD](patches/bun-termux-cwd.patch) ·
+[instrukcja i diagnostyka](docs/termux-cwd.md) ·
+[upstream #44565](https://github.com/oven-sh/bun/issues/44565).
+
 ## Szybki start — Termux
 
 Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
@@ -220,3 +225,27 @@ Jeżeli używasz nazwy `bun-tc39`:
 ```sh
 bun-tc39 x --bun tsc --noEmit
 ```
+
+
+## Patche Bun: dekoratory i współdzielona pamięć Androida
+
+| Patch | Co naprawia | Zgłoszenie |
+| --- | --- | --- |
+| [bun-hmr-tc39.patch](patches/bun-hmr-tc39.patch) | Brak helperów TC39 w runtime HMR klienta i serwera | [#44463](https://github.com/oven-sh/bun/issues/44463) |
+| [bun-termux-cwd.patch](patches/bun-termux-cwd.patch) | CouldntReadCurrentDirectory dla dostępnego projektu pod /storage/emulated/0, gdy rodzic zwraca ENOENT | [#44565](https://github.com/oven-sh/bun/issues/44565) |
+
+Oba patche można nałożyć na źródła Bun w rewizji
+`bc7a813b10b6ef8accc00c931b9a501331ac8c5c`. Projekt DEBUG z HMR wymaga poprawki
+dekoratorów; sam patch CWD rozwiązuje inny problem. Szczegóły pobrania,
+wspólnego nakładania i pełnej kompilacji dla Androida:
+[docs/termux-cwd.md](docs/termux-cwd.md).
+
+Do repo dodano również:
+
+- [tools/check-shared-storage.sh](tools/check-shared-storage.sh): próbę uruchomienia trzech poleceń w tymczasowym projekcie na telefonie;
+- [tools/verify-ancestor-policy.py](tools/verify-ancestor-policy.py): wyizolowany sprawdzian warunku resolvera na hoście Linux;
+- [wyniki weryfikacji CWD](verification/termux-cwd/results.md) i [metadane buildu](verification/termux-cwd/build-info.json).
+
+Pełny build Android ARM64 z patchem CWD przeszedł. Nowa binarka CWD nie była
+uruchamiana na telefonie. Wyniki kompilacji i statycznej kontroli ELF są
+oddzielone w dokumentacji od oczekiwanego testu działania na urządzeniu.

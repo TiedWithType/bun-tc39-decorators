@@ -1,0 +1,25 @@
+{
+  "bun_version": "1.4.3",
+  "source_commit": "bc7a813b10b6ef8accc00c931b9a501331ac8c5c",
+  "webkit_commit": "fb1167ebf2cb9edc1f6771a2c11771b024693ae0",
+  "target": "aarch64-linux-android",
+  "android_api": 28,
+  "cpu": "armv8-a+crc",
+  "profile": "release",
+  "toolchain": {
+    "clang": "23.1.2",
+    "rust": "nightly-2026-09-15",
+    "ndk": "r27c"
+  },
+  "patches": [
+    {
+      "file": "../../patches/bun-termux-cwd.patch",
+      "sha256": "9b11d6f3b31110053c77437561bed4a220b21a8c62a15db6426d83cd6a64b8ed"
+    }
+  ],
+  "device_execution_verified": false,
+  "build_completed": true,
+  "elf_verified": true,
+  "binary_sha256": "3529b5b6b2174ede3623796998a6cc27eb63da5985557dca7676a4c6ad60a311",
+  "includes_hmr_patch": false
+}
