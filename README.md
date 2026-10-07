@@ -42,8 +42,8 @@ Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
 
 Ostatni wspólny build ma wersję `1.4.3` i revision `1.4.3+daf9b8beb`.
 Zawiera wszystkie cztery patche. Przeszedł kompilację i kontrole statyczne
-ELF oraz 12/12 kontroli runtime na telefonie, w tym instalacje default
-i copyfile. Dwa nowe testy ochrony symlinków na telefonie pozostają do wykonania.
+ELF oraz 14/14 kontroli runtime na telefonie, w tym instalacje default
+i copyfile oraz oba testy ochrony symlinków.
 Wyniki: [verification/termux-install-syscalls/results.md](verification/termux-install-syscalls/results.md).
 
 Projekt diagnostyczny umieść w prywatnym katalogu Termuksa, np. pod `~`.

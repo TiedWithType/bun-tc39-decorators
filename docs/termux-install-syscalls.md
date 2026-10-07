@@ -75,6 +75,6 @@ te należy sprawdzić przez `bun-patched --watch server.ts`.
 
 Aktualne metadane i wyniki budowania:
 `verification/termux-install-syscalls/`. Log `device-after.log` potwierdza
-12/12 kontroli na Android ARM64 z nową binarką, w tym instalacje default
-i copyfile oraz poprawne `.bin`. Nie zawiera testów `symlinkFinal` i
-`symlinkParent`; te dwa przypadki wymagają uruchomienia aktualnego runnera.
+14/14 kontroli na Android ARM64 z nową binarką, w tym instalacje default
+i copyfile oraz poprawne `.bin`. Testy `symlinkFinal` i `symlinkParent`
+również przeszły (EXIT 0).

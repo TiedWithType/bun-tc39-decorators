@@ -51,7 +51,7 @@ Saved lockfile
 
 + bun-termux-probe-bin@../probe.tgz
 
-1 package installed [24.00ms]
+1 package installed [10.00ms]
 EXIT: 0
 
 === kontrola .bin: default ===
@@ -66,11 +66,19 @@ Saved lockfile
 
 + bun-termux-probe-bin@../probe.tgz
 
-1 package installed [7.00ms]
+1 package installed [11.00ms]
 EXIT: 0
 
 === kontrola .bin: copyfile ===
 PASS: installResult
+EXIT: 0
+
+=== symlinkFinal ===
+PASS: symlinkFinal
+EXIT: 0
+
+=== symlinkParent ===
+PASS: symlinkParent
 EXIT: 0
 
 Zakończono. Nieudane testy: 0. EXIT 159 zwykle oznacza SIGSYS.

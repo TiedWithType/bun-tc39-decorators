@@ -64,13 +64,17 @@
   "full_hmr_runtime_tests_rerun": false,
   "device_execution_verified": true,
   "device_runtime_checks": {
-    "passed": 12,
-    "total": 12,
+    "passed": 14,
+    "total": 14,
     "install_backends": [
       "default",
       "copyfile"
     ],
-    "symlink_safety_checks_present": false,
-    "log": "device-after.log"
+    "symlink_safety_checks_present": true,
+    "log": "device-after.log",
+    "symlink_safety_checks_passed": [
+      "symlinkFinal",
+      "symlinkParent"
+    ]
   }
 }

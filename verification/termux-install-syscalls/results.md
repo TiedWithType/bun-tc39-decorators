@@ -9,8 +9,8 @@
 - Istniejące regresje ochrony końcowego symlinka, symlinka katalogowego i końcowego slasha: 3/3 na tym samym Linux Bun.
 - Diagnostyka Linux: 13/14; `getifaddrs` zwraca EPERM w środowisku hosta.
 - Na telefonie przed poprawką potwierdzono SYS_SECCOMP dla openat2 oraz EXIT 159 w obu backendach instalacji.
-- Na telefonie po poprawce: 12/12 kontroli, wszystkie EXIT 0. Log `device-after.log` potwierdza Android ARM64 i pełny revision źródeł `daf9b8beba027bc8d04be41f86766ca4f8c91d31`.
+- Na telefonie po poprawce: 14/14 kontroli, wszystkie EXIT 0. Log `device-after.log` potwierdza Android ARM64 i pełny revision źródeł `daf9b8beba027bc8d04be41f86766ca4f8c91d31`.
 - Instalacje default i copyfile oraz kontrole dowiązań i uprawnień `.bin` przechodzą; wcześniejszy SIGSYS nie wystąpił w tych próbach.
-- Użyty runner nie zawierał testów `symlinkFinal` i `symlinkParent`; ochronę dowiązań na telefonie trzeba jeszcze zweryfikować aktualnym runnerem. Pełne testy HMR również nie zostały ponownie wykonane.
+- Testy ochrony dowiązań `symlinkFinal` i `symlinkParent` przeszły na telefonie (EXIT 0). Pełne testy HMR nie zostały ponownie wykonane.
 
 Metadane pełnego buildu i kontroli ELF są w `build-info.json` i `binary-check.log`.
