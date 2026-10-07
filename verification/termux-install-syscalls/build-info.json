@@ -60,7 +60,17 @@
     "total": 4
   },
   "device_before_fix_openat2_seccomp_confirmed": true,
-  "revision_execution_verified": false,
+  "revision_execution_verified": true,
   "full_hmr_runtime_tests_rerun": false,
-  "device_execution_verified": false
+  "device_execution_verified": true,
+  "device_runtime_checks": {
+    "passed": 12,
+    "total": 12,
+    "install_backends": [
+      "default",
+      "copyfile"
+    ],
+    "symlink_safety_checks_present": false,
+    "log": "device-after.log"
+  }
 }

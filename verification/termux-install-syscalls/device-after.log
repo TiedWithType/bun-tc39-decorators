@@ -1,0 +1,76 @@
+
+=== info ===
+{
+  "bun": "1.4.3",
+  "revision": "daf9b8beba027bc8d04be41f86766ca4f8c91d31",
+  "platform": "android",
+  "arch": "arm64",
+  "execPath": "/data/data/com.termux/files/usr/bin/bun",
+  "tmpdir": "/data/data/com.termux/files/usr/tmp",
+  "opener": "/data/data/com.termux/files/usr/bin/termux-open-url"
+}
+PASS: info
+EXIT: 0
+
+=== tmpdir ===
+PASS: tmpdir
+EXIT: 0
+
+=== network ===
+["r_rmnet_data1","wlan0","rmnet_data1","rmnet_data0","ifb2","ifb1","ifb0","dummy0","lo"]
+PASS: network
+EXIT: 0
+
+=== shell ===
+PASS: shell
+EXIT: 0
+
+=== spawn ===
+PASS: spawn
+EXIT: 0
+
+=== http ===
+PASS: http
+EXIT: 0
+
+=== watch ===
+PASS: watch
+EXIT: 0
+
+=== bun run --bun: wymuszenie właściwego runtime ===
+$ node probe.mjs forcedNode
+forced-node-ok
+PASS: forcedNode
+EXIT: 0
+
+=== lokalny bun install: default ===
+bun install v1.4.3 (daf9b8beb)
+Resolving dependencies
+Resolved, downloaded and extracted [1]
+Saved lockfile
+
++ bun-termux-probe-bin@../probe.tgz
+
+1 package installed [24.00ms]
+EXIT: 0
+
+=== kontrola .bin: default ===
+PASS: installResult
+EXIT: 0
+
+=== lokalny bun install: copyfile ===
+bun install v1.4.3 (daf9b8beb)
+Resolving dependencies
+Resolved, downloaded and extracted [1]
+Saved lockfile
+
++ bun-termux-probe-bin@../probe.tgz
+
+1 package installed [7.00ms]
+EXIT: 0
+
+=== kontrola .bin: copyfile ===
+PASS: installResult
+EXIT: 0
+
+Zakończono. Nieudane testy: 0. EXIT 159 zwykle oznacza SIGSYS.

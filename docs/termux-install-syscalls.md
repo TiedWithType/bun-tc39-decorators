@@ -74,5 +74,7 @@ Wynik bez błędów nie potwierdza interaktywnego HMR i skrótu przeglądarki;
 te należy sprawdzić przez `bun-patched --watch server.ts`.
 
 Aktualne metadane i wyniki budowania:
-`verification/termux-install-syscalls/`. Weryfikacja binarki na telefonie
-po tej poprawce pozostaje do wykonania; log sprzed poprawki jej nie zastępuje.
+`verification/termux-install-syscalls/`. Log `device-after.log` potwierdza
+12/12 kontroli na Android ARM64 z nową binarką, w tym instalacje default
+i copyfile oraz poprawne `.bin`. Nie zawiera testów `symlinkFinal` i
+`symlinkParent`; te dwa przypadki wymagają uruchomienia aktualnego runnera.
