@@ -1,5 +1,9 @@
 # Bun + TypeScript TC39 — dekorator DEBUG z natywnym HMR
 
+**Dodatkowy audyt Termux (2026-10-07):** [ustalenia i test offline](docs/termux-audit.md).
+Uruchom `sh tools/check-termux-runtime.sh bun-tc39`, aby sprawdzić między innymi
+instalację lokalnego pakietu z `.bin`, `--bun`, sieć, procesy i obserwowanie plików.
+
 Projekt do sprawdzenia dekoratorów TC39 w **Bun z poprawką runtime HMR**.
 Dekorator `@DEBUG` weryfikuje argumenty `value` i `context` dla klasy,
 metody, pola i auto-accessora. Wynik pokazuje się w jednym `alert`, na
@@ -10,7 +14,8 @@ Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 
 **Patch zbiorczy dla Bun 1.4.3:**
 [bun-1.4.3-termux-combined.patch](patches/bun-1.4.3-termux-combined.patch)
-łączy poprawki HMR/dekoratorów TC39, CWD Androida i otwierania przeglądarki
+łączy poprawki HMR/dekoratorów TC39, CWD Androida, otwierania przeglądarki
+i syscalli instalatora
 w Termuksie. Nakładaj patch zbiorczy albo patche osobne.
 
 **Osobna poprawka HMR:** [patch w repo](patches/bun-hmr-tc39.patch).
@@ -20,6 +25,10 @@ w Termuksie. Nakładaj patch zbiorczy albo patche osobne.
 [patch CWD](patches/bun-termux-cwd.patch) ·
 [instrukcja i diagnostyka](docs/termux-cwd.md) ·
 [upstream #44565](https://github.com/oven-sh/bun/issues/44565).
+
+**Poprawka instalatora (SIGSYS):**
+[patch](patches/bun-termux-install-syscalls.patch) ·
+[opis i testy](docs/termux-install-syscalls.md).
 
 **Poprawka skrótu przeglądarki:**
 [patch](patches/bun-termux-open-browser.patch) ·
@@ -31,9 +40,9 @@ Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
 `bun-tc39` jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
 (Android 9 lub nowszy). Architektura telefonu: `uname -m`.
 
-Ostatni wspólny build ma wersję `1.4.3` i revision `1.4.3+f5d709368`.
-Przeszedł kompilację i kontrole statyczne ELF; test na telefonie pozostaje
-do wykonania.
+Ostatni wspólny build ma wersję `1.4.3` i revision `1.4.3+daf9b8beb`.
+Zawiera wszystkie cztery patche. Przeszedł kompilację i kontrole statyczne
+ELF; test nowej binarki na telefonie pozostaje do wykonania.
 
 Projekt diagnostyczny umieść w prywatnym katalogu Termuksa, np. pod `~`.
 
@@ -154,7 +163,8 @@ To projekt diagnostyczny, nie pełny zestaw testów zgodności specyfikacji TC39
 | `tsconfig.json` | Standardowe dekoratory, ścisłe sprawdzanie typów |
 | `patches/bun-hmr-tc39.patch` | Poprawka HMR z dwoma testami regresji |
 | `patches/bun-termux-open-browser.patch` | Obsługa narzędzi Termuksa dla skrótu `o + Enter` |
-| `patches/bun-1.4.3-termux-combined.patch` | Trzy poprawki razem: HMR, CWD i otwieranie przeglądarki |
+| `patches/bun-termux-install-syscalls.patch` | Android: fallback openat2 i zmiana uprawnień bez fchmodat2 |
+| `patches/bun-1.4.3-termux-combined.patch` | Cztery poprawki razem: HMR, CWD, przeglądarka i instalator |
 
 W `tsconfig.json` ustawiono `experimentalDecorators: false`.
 Projekt nie korzysta z dawnej sygnatury TypeScript
@@ -195,7 +205,7 @@ sprawdź także terminal i konsolę przeglądarki.
 ## Zastosowanie patcha zbiorczego w źródłach Bun
 
 Sprawdzona baza: `bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (Bun 1.4.3).
-Patch zbiorczy zawiera wszystkie trzy poprawki. Stosuj go na czystej bazie;
+Patch zbiorczy zawiera wszystkie cztery poprawki. Stosuj go na czystej bazie;
 nie nakładaj go dodatkowo na źródła z nałożonymi patchami osobnymi.
 Na innej rewizji potrzebna jest osobna weryfikacja.
 
@@ -234,9 +244,9 @@ bun scripts/build.ts --profile=release --os=linux --arch=aarch64 \
 
 Gotowa binarka: `build/android-aarch64/bun`, API 28+. Ostatni wspólny build
 powstał z lokalnego commita źródeł
-`f5d709368d494b003efe6cb40fc9007ff852f26d`. Jego `--revision` zawiera
-`1.4.3+f5d709368`; nowy commit utworzony samodzielnie będzie miał własną rewizję.
-Metadane: [build-info.json](verification/termux-open-browser/build-info.json).
+`daf9b8beba027bc8d04be41f86766ca4f8c91d31`. Jego `--revision` zawiera
+`1.4.3+daf9b8beb`; nowy commit utworzony samodzielnie będzie miał własną rewizję.
+Metadane: [build-info.json](verification/termux-install-syscalls/build-info.json).
 
 Poprawka HMR rejestruje helpery TC39 oraz pól i metod prywatnych w module
 `bun:wrap`. CWD obsługuje niedostępnego rodzica na Androidzie. Poprawka skrótu
@@ -273,7 +283,8 @@ bun-tc39 x --bun tsc --noEmit
 | [bun-hmr-tc39.patch](patches/bun-hmr-tc39.patch) | Brak helperów TC39 w runtime HMR klienta i serwera | [#44463](https://github.com/oven-sh/bun/issues/44463) |
 | [bun-termux-cwd.patch](patches/bun-termux-cwd.patch) | CouldntReadCurrentDirectory przy niedostępnym rodzicu dostępnego projektu w pamięci współdzielonej Androida | [#44565](https://github.com/oven-sh/bun/issues/44565) |
 | [bun-termux-open-browser.patch](patches/bun-termux-open-browser.patch) | SecurityException z `/system/bin/am` po `o + Enter` | [#44570](https://github.com/oven-sh/bun/issues/44570) |
-| [bun-1.4.3-termux-combined.patch](patches/bun-1.4.3-termux-combined.patch) | Wszystkie trzy poprawki w jednym patchu | Powyższe zgłoszenia |
+| [bun-termux-install-syscalls.patch](patches/bun-termux-install-syscalls.patch) | SIGSYS przy instalacji pakietów z bin/cli.js na Androidzie | [#39060](https://github.com/oven-sh/bun/issues/39060) |
+| [bun-1.4.3-termux-combined.patch](patches/bun-1.4.3-termux-combined.patch) | Wszystkie cztery poprawki w jednym patchu | Powyższe zgłoszenia |
 
 Zalecany wspólny wariant to **patch zbiorczy**. Osobne patche pozwalają
 wybrać pojedynczą poprawkę. Wszystkie odnoszą się do bazy
@@ -281,6 +292,7 @@ wybrać pojedynczą poprawkę. Wszystkie odnoszą się do bazy
 
 Narzędzia i wyniki:
 
+- [tools/check-termux-runtime.sh](tools/check-termux-runtime.sh): testy offline instalatora, .bin, symlinków, --bun i runtime.
 - [tools/check-shared-storage.sh](tools/check-shared-storage.sh): test CWD na telefonie.
 - [tools/verify-ancestor-policy.py](tools/verify-ancestor-policy.py): test warunku resolvera na hoście.
 - [tools/verify-opener.mjs](tools/verify-opener.mjs): sprawdzenia rzeczywistego bloku skrótu ze źródeł z zastąpionymi API procesu.
@@ -294,6 +306,10 @@ poprawionych źródeł Bun:
 node tools/verify-opener.mjs ../bun-source/src/js/internal/html.ts
 ```
 
-Pełny build z trzema patchami i kontrole ELF przeszły. Binarka nie była
+Pełny build z czterema patchami i kontrole ELF przeszły. Binarka nie była
 uruchamiana na telefonie ani w emulatorze. Testy kodu ze zastąpionymi API
 nie potwierdzają działania ActivityManager na konkretnym urządzeniu.
+
+Wyniki nowej poprawki instalatora: [opis weryfikacji](verification/termux-install-syscalls/results.md),
+[log budowania](verification/termux-install-syscalls/android-build.log),
+[kontrola ELF](verification/termux-install-syscalls/binary-check.log).

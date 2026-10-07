@@ -16,14 +16,26 @@ if [ ! -d "$storage" ]; then
   exit 2
 fi
 fixture=$(mktemp -d "$storage/bun-cwd-check.XXXXXX")
-trap 'rm -rf -- "$fixture"' EXIT
+private_bin=''
+trap 'rm -rf -- "$fixture" "$private_bin"' EXIT
+private_bin=$(mktemp -d "${TMPDIR:-${HOME:-/tmp}}/bun-cwd-bin.XXXXXX")
+# Shared storage cannot host executable symlinks. Pin nested `bun` in a private dir.
+ln -s "$bun_bin" "$private_bin/bun"
+PATH="$private_bin:$PATH"
+export PATH
 cd "$fixture"
 printf '%s\n' '{"scripts":{"check":"bun index.ts"}}' > package.json
 printf '%s\n' 'console.log("shared-storage-ok")' > index.ts
 printf '%s\n' '1/3: bezpośrednie uruchomienie'
-"$bun_bin" index.ts
+output=$("$bun_bin" index.ts)
+[ "$output" = shared-storage-ok ]
+printf '%s\n' "$output"
 printf '%s\n' '2/3: bun run check'
-"$bun_bin" run check
+output=$("$bun_bin" run check)
+[ "$output" = shared-storage-ok ]
+printf '%s\n' "$output"
 printf '%s\n' '3/3: bun check'
-"$bun_bin" check
+output=$("$bun_bin" check)
+[ "$output" = shared-storage-ok ]
+printf '%s\n' "$output"
 printf '%s\n' 'OK: wszystkie trzy polecenia zakończyły się sukcesem.'

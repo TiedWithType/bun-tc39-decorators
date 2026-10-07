@@ -1,0 +1,66 @@
+{
+  "bun_version": "1.4.3",
+  "bun_revision": "1.4.3+daf9b8beb",
+  "source_commit": "daf9b8beba027bc8d04be41f86766ca4f8c91d31",
+  "source_tree": "73f0265abd4f8402ed88a653a1a4d374dab470b6",
+  "base_source_commit": "bc7a813b10b6ef8accc00c931b9a501331ac8c5c",
+  "webkit_commit": "fb1167ebf2cb9edc1f6771a2c11771b024693ae0",
+  "built_at_utc": "2026-10-07T07:11:02.684294+00:00",
+  "target": "aarch64-linux-android",
+  "android_api": 28,
+  "cpu": "armv8-a+crc",
+  "profile": "release",
+  "canary": false,
+  "toolchain": {
+    "clang": "23.1.2",
+    "rust": "nightly-2026-09-15 (1.100.0-nightly 574ff7d98)",
+    "ndk": "r27c"
+  },
+  "patches": [
+    {
+      "file": "patches/bun-hmr-tc39.patch",
+      "sha256": "e6629d6746007fc3edebcd3334d8c8d949a580da8dd1d740f34a7de68fd1b860"
+    },
+    {
+      "file": "patches/bun-termux-cwd.patch",
+      "sha256": "9b11d6f3b31110053c77437561bed4a220b21a8c62a15db6426d83cd6a64b8ed"
+    },
+    {
+      "file": "patches/bun-termux-open-browser.patch",
+      "sha256": "f41b1d803be017ed8a86457a24894ac87bf807a920eb749c9cb862644419488b"
+    },
+    {
+      "file": "patches/bun-termux-install-syscalls.patch",
+      "sha256": "e0ba747f1ece23b00cd17a01f641642583d3fc3b458f254ac92bf770b51adef1"
+    }
+  ],
+  "combined_patch_sha256": "c5c865bc4ec03d875d09108c98d339be0f97273fdb1b7ea8880c0dd78a100e32",
+  "build_completed": true,
+  "build_exit_code": 0,
+  "elf_verified": true,
+  "strict_binary_verification_exit_code": 0,
+  "elf_machine": "AArch64",
+  "elf_interpreter": "/system/bin/linker64",
+  "needed_libraries": [
+    "libc.so",
+    "libm.so",
+    "libdl.so"
+  ],
+  "binary_size_bytes": 87007080,
+  "binary_sha256": "3fbb4e76c349c0c62bce200fc9db4213da76ba43d10021406571a3bbfd422c19",
+  "elf_build_id": "31deb155b8846bbd8c93d7b0f0fc35573ca46b0b",
+  "opener_source_checks": {
+    "passed": 9,
+    "total": 9
+  },
+  "cwd_predicate_checks_passed": true,
+  "host_regression_fixtures": {
+    "bun_version": "1.4.2",
+    "passed": 4,
+    "total": 4
+  },
+  "device_before_fix_openat2_seccomp_confirmed": true,
+  "revision_execution_verified": false,
+  "full_hmr_runtime_tests_rerun": false,
+  "device_execution_verified": false
+}

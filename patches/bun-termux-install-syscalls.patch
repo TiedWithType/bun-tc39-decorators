@@ -1,0 +1,153 @@
+diff --git a/src/sys/lib.rs b/src/sys/lib.rs
+index c8903734..607be84f 100644
+--- a/src/sys/lib.rs
++++ b/src/sys/lib.rs
+@@ -2764,6 +2764,13 @@ mod posix_impl {
+     }
+     /// `lchmod` is BSD/Darwin-only; Linux: `fchmodat(.., AT_SYMLINK_NOFOLLOW)`.
+     pub fn lchmod(path: &ZStr, mode: Mode) -> Maybe<()> {
++        #[cfg(target_os = "android")]
++        {
++            // fchmodat2 can raise SIGSYS under Android's app seccomp policy.
++            // Bionic implements NOFOLLOW with O_PATH | O_NOFOLLOW and a
++            // pinned fd, without fchmodat2 or requiring read access to the file.
++            fchmodat(Fd::cwd(), path, mode, libc::AT_SYMLINK_NOFOLLOW)
++        }
+         #[cfg(any(target_os = "macos", target_os = "freebsd"))]
+         {
+             // The `libc` crate omits the `lchmod` binding on both Darwin
+@@ -2780,7 +2787,7 @@ mod posix_impl {
+             );
+             Ok(())
+         }
+-        #[cfg(not(any(target_os = "macos", target_os = "freebsd")))]
++        #[cfg(not(any(target_os = "macos", target_os = "freebsd", target_os = "android")))]
+         {
+             const SYS_FCHMODAT2: libc::c_long = 452;
+             loop {
+diff --git a/src/sys/linux_syscall.rs b/src/sys/linux_syscall.rs
+index 374ac634..b74ec052 100644
+--- a/src/sys/linux_syscall.rs
++++ b/src/sys/linux_syscall.rs
+@@ -91,19 +91,30 @@ pub(crate) fn openat(dir: Fd, path: &ZStr, flags: i32, mode: Mode) -> Result<Fd,
+
+ #[inline]
+ pub(crate) fn openat2_beneath(dir: Fd, path: &ZStr, flags: i32, mode: Mode) -> Result<Fd, i32> {
+-    let oflags = rustix::fs::OFlags::from_bits_retain(flags as u32);
+-    let mode = rustix::fs::Mode::from_raw_mode(mode);
+-    let dir = dir.as_borrowed_fd();
+-    retry(|| {
+-        rustix::fs::openat2(
+-            dir,
+-            path.as_cstr(),
+-            oflags,
+-            mode,
+-            rustix::fs::ResolveFlags::BENEATH,
+-        )
+-    })
+-    .map(own_fd)
++    // Android app seccomp policies can trap openat2 with SIGSYS instead of
++    // returning ENOSYS. Do not probe it: let the caller use its existing
++    // realpath-based package containment check.
++    #[cfg(target_os = "android")]
++    {
++        let _ = (dir, path, flags, mode);
++        return Err(libc::ENOSYS);
++    }
++    #[cfg(target_os = "linux")]
++    {
++        let oflags = rustix::fs::OFlags::from_bits_retain(flags as u32);
++        let mode = rustix::fs::Mode::from_raw_mode(mode);
++        let dir = dir.as_borrowed_fd();
++        retry(|| {
++            rustix::fs::openat2(
++                dir,
++                path.as_cstr(),
++                oflags,
++                mode,
++                rustix::fs::ResolveFlags::BENEATH,
++            )
++        })
++        .map(own_fd)
++    }
+ }
+
+ #[inline]
+diff --git a/test/cli/install/termux-bin.test.ts b/test/cli/install/termux-bin.test.ts
+new file mode 100644
+index 00000000..70049499
+--- /dev/null
++++ b/test/cli/install/termux-bin.test.ts
+@@ -0,0 +1,72 @@
++import { describe, expect, test } from "bun:test";
++import { chmodSync, existsSync, lstatSync, realpathSync, statSync, symlinkSync } from "node:fs";
++import { join } from "node:path";
++import { bunEnv, bunExe, isAndroid, tempDir } from "harness";
++
++// Android app seccomp sends SIGSYS for openat2/fchmodat2. All fixtures are
++// local so the tests also run offline in a private Termux directory.
++describe.skipIf(!isAndroid)("Termux package bins", () => {
++  for (const backend of ["default", "copyfile"]) {
++    test(`installs and chmods a nested bin with ${backend}`, () => {
++      using dir = tempDir("termux-nested-bin", {
++        "bunfig.toml": '[install]\nlinker = "hoisted"\n',
++        "package.json": JSON.stringify({ workspaces: ["packages/*"] }),
++        "packages/tool/package.json": JSON.stringify({
++          name: "termux-tool",
++          version: "1.0.0",
++          bin: { "termux-tool": "bin/cli.js" },
++        }),
++        "packages/tool/bin/cli.js": '#!/usr/bin/env node\nconsole.log("termux-bin-ok");\n',
++      });
++      const root = String(dir);
++      const target = join(root, "packages/tool/bin/cli.js");
++      chmodSync(target, 0o600);
++      const result = Bun.spawnSync({
++        cmd: [bunExe(), "install", "--ignore-scripts", ...(backend === "copyfile" ? ["--backend=copyfile"] : [])],
++        cwd: root,
++        env: bunEnv,
++        stdout: "pipe",
++        stderr: "pipe",
++        timeout: 15000,
++      });
++      expect(result.exitCode).toBe(0);
++      const link = join(root, "node_modules/.bin/termux-tool");
++      expect(lstatSync(link).isSymbolicLink()).toBe(true);
++      expect(realpathSync(link)).toBe(realpathSync(target));
++      expect(statSync(target).mode & 0o100).toBe(0o100);
++    });
++  }
++
++  for (const parentSymlink of [false, true]) {
++    test(`preserves bin symlink protection (${parentSymlink ? "parent" : "final"})`, () => {
++      using dir = tempDir("termux-bin-containment", {
++        "bunfig.toml": '[install]\nlinker = "hoisted"\n',
++        "package.json": JSON.stringify({ workspaces: ["packages/*"] }),
++        "packages/tool/package.json": JSON.stringify({
++          name: "termux-tool",
++          version: "1.0.0",
++          bin: { "termux-tool": parentSymlink ? "linked/victim.js" : "payload" },
++        }),
++        "outside/victim.js": "do not make me executable",
++      });
++      const root = realpathSync(String(dir));
++      const victim = join(root, "outside/victim.js");
++      chmodSync(victim, 0o600);
++      symlinkSync(
++        parentSymlink ? join(root, "outside") : victim,
++        join(root, "packages/tool", parentSymlink ? "linked" : "payload"),
++      );
++      const result = Bun.spawnSync({
++        cmd: [bunExe(), "install", "--ignore-scripts"],
++        cwd: root,
++        env: bunEnv,
++        stdout: "pipe",
++        stderr: "pipe",
++        timeout: 15000,
++      });
++      expect(result.exitCode).toBe(0);
++      expect(statSync(victim).mode & 0o777).toBe(0o600);
++      expect(existsSync(join(root, "node_modules/.bin/termux-tool"))).toBe(!parentSymlink);
++    });
++  }
++});

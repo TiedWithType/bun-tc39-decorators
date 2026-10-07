@@ -1,0 +1,5 @@
+Base: bc7a813b10b6ef8accc00c931b9a501331ac8c5c
+Combined patch: git apply --check PASS; apply PASS; git diff --check PASS
+Four individual patches: sequential git apply --check PASS; apply PASS
+Both applied source trees equal built source tree: 73f0265abd4f8402ed88a653a1a4d374dab470b6
+Source commit: daf9b8beba027bc8d04be41f86766ca4f8c91d31
