@@ -315,3 +315,14 @@ nie potwierdzają działania ActivityManager na konkretnym urządzeniu.
 Wyniki nowej poprawki instalatora: [opis weryfikacji](verification/termux-install-syscalls/results.md),
 [log budowania](verification/termux-install-syscalls/android-build.log),
 [kontrola ELF](verification/termux-install-syscalls/binary-check.log).
+
+## Windows x64 — wspólny zestaw patchy
+
+Przygotowano Bun `1.4.3` release/baseline (bez wymogu AVX) z tego samego
+commitu źródeł co binarka Android: `daf9b8beba027bc8d04be41f86766ca4f8c91d31`.
+Patch HMR jest aktywny na Windows; trzy poprawki Termuksa są warunkowe.
+Kompilacja i kontrole PE przeszły; test uruchomienia w natywnym Windows
+pozostaje do wykonania. [Wyniki i metadane](verification/windows-x64/results.md).
+
+W PowerShell: `./bun.exe --version`, `./bun.exe --revision`, a w katalogu
+projektu `& "C:\narzedzia\bun-patched\bun.exe" --watch server.ts`.

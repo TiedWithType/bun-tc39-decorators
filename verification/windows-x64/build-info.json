@@ -1,0 +1,97 @@
+{
+  "bun_version": "1.4.3",
+  "expected_cli_revision": "1.4.3+daf9b8beb",
+  "source_commit": "daf9b8beba027bc8d04be41f86766ca4f8c91d31",
+  "source_tree": "73f0265abd4f8402ed88a653a1a4d374dab470b6",
+  "base_source_commit": "bc7a813b10b6ef8accc00c931b9a501331ac8c5c",
+  "webkit_commit": "fb1167ebf2cb9edc1f6771a2c11771b024693ae0",
+  "built_at_utc": "2026-10-07T08:28:51.330727+00:00",
+  "target": "x86_64-pc-windows-msvc",
+  "profile": "release",
+  "baseline": true,
+  "requires_avx": false,
+  "lto": true,
+  "canary": false,
+  "toolchain": {
+    "clang": "23.1.2",
+    "rust": "nightly-2026-09-15 (1.100.0-nightly 574ff7d98)",
+    "windows_sdk": "10.0.26100",
+    "msvc_crt": "14.44.17.14",
+    "ucrt_servicing": "10.0.26100.8249"
+  },
+  "patches": [
+    {
+      "file": "patches/bun-hmr-tc39.patch",
+      "sha256": "e6629d6746007fc3edebcd3334d8c8d949a580da8dd1d740f34a7de68fd1b860"
+    },
+    {
+      "file": "patches/bun-termux-cwd.patch",
+      "sha256": "9b11d6f3b31110053c77437561bed4a220b21a8c62a15db6426d83cd6a64b8ed"
+    },
+    {
+      "file": "patches/bun-termux-open-browser.patch",
+      "sha256": "f41b1d803be017ed8a86457a24894ac87bf807a920eb749c9cb862644419488b"
+    },
+    {
+      "file": "patches/bun-termux-install-syscalls.patch",
+      "sha256": "e0ba747f1ece23b00cd17a01f641642583d3fc3b458f254ac92bf770b51adef1"
+    }
+  ],
+  "combined_patch_sha256": "c5c865bc4ec03d875d09108c98d339be0f97273fdb1b7ea8880c0dd78a100e32",
+  "build_completed": true,
+  "build_exit_code": 0,
+  "initial_link_attempt": "terminated by the 8 GiB memory limit",
+  "successful_link_retry": {
+    "lto_jobs": 1,
+    "lld_threads": 1,
+    "ninja_jobs": 1,
+    "exit_code": 0
+  },
+  "binary_size_bytes": 87858688,
+  "binary_sha256": "1a493488e3e7ef039233f187c0cedcb2c37f07eeb785c1a28c668971e7ad227f",
+  "format": "PE32+",
+  "machine": "AMD64",
+  "subsystem": "Windows console",
+  "needed_libraries": [
+    "ADVAPI32.dll",
+    "CRYPT32.dll",
+    "IPHLPAPI.DLL",
+    "KERNEL32.dll",
+    "OLEAUT32.dll",
+    "SHELL32.dll",
+    "USER32.dll",
+    "USERENV.dll",
+    "WS2_32.dll",
+    "WSOCK32.dll",
+    "api-ms-win-core-synch-l1-2-0.dll",
+    "bcryptprimitives.dll",
+    "dbghelp.dll",
+    "ntdll.dll",
+    "ole32.dll"
+  ],
+  "strict_binary_verification_exit_code": 0,
+  "verification": {
+    "exports": 736,
+    "shared_libraries": 15,
+    "imports": 429,
+    "hardening_properties": 5,
+    "duplicate_strong_symbols": 0
+  },
+  "hmr_codegen_checks": {
+    "bake.client.js": {
+      "helpers_present": 10,
+      "helpers_total": 10,
+      "sha256": "2ae14ae2b8f68ee080f0814269fcf21edcf1cb1347381739f8f76e6ccbae3523"
+    },
+    "bake.server.js": {
+      "helpers_present": 10,
+      "helpers_total": 10,
+      "sha256": "7a6637583058d9574ae8a076615fad4c539fe4543a7c132b691d1b19f187295f"
+    }
+  },
+  "source_revision_embedded": true,
+  "native_windows_execution_verified": false,
+  "cli_revision_execution_verified": false,
+  "wine_execution": "blocked: wineserver socket: Operation not permitted",
+  "full_hmr_runtime_tests_rerun_on_windows": false
+}
