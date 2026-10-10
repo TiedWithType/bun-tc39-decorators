@@ -1,0 +1,127 @@
+rustup spent 9s installing the pinned toolchain (nightly-2026-09-15); it was missing or incomplete on this machine
+[configured] bun-debug in 9263ms (unchanged)
+ninja: Entering directory `/workspace/scratch/df137ea20b81/bun-build-source/build/debug'
+[1/116] cxx obj/unified/UnifiedSource-src_runtime_bake-0.cpp.o
+[2/116] cxx obj/unified/UnifiedSource-src_jsc_modules-0.cpp.o
+[3/116] cxx obj/unified/UnifiedSource-src_runtime_webview-0.cpp.o
+[4/116] cxx obj/packages/bun-usockets/src/crypto/root_certs_darwin.cpp.o
+[5/116] cxx obj/packages/bun-usockets/src/crypto/root_certs_windows.cpp.o
+[6/116] cxx obj/unified/UnifiedSource-src_uws_sys-0.cpp.o
+[7/116] cxx obj/src/jsc/bindings/BunObject.cpp.o
+[8/116] cxx obj/src/jsc/bindings/bindings.cpp.o
+[9/116] cxx obj/src/jsc/bindings/highway_json.cpp.o
+[10/116] cxx obj/src/jsc/bindings/BunProcess.cpp.o
+[11/116] cxx obj/src/jsc/bindings/highway_xml.cpp.o
+[12/116] cxx obj/src/jsc/bindings/image_coregraphics_shim.cpp.o
+[13/116] cxx obj/src/jsc/bindings/highway_sourcemap.cpp.o
+[14/116] cxx obj/src/jsc/bindings/image_wic_shim.cpp.o
+[15/116] cxx obj/src/jsc/bindings/JSBuffer.cpp.o
+[16/116] cxx obj/src/jsc/bindings/image_resize.cpp.o
+[17/116] cxx obj/src/jsc/bindings/ProcessBindingConstants.cpp.o
+[18/116] cxx obj/src/jsc/bindings/ProcessBindingUV.cpp.o
+[19/116] cxx obj/src/jsc/bindings/napi.cpp.o
+[20/116] cxx obj/src/jsc/bindings/sqlite/JSSQLStatement.cpp.o
+[21/116] cxx obj/src/jsc/bindings/webcore/HTTPParsers.cpp.o
+[22/116] cxx obj/src/jsc/bindings/webcore/JSDOMPromiseDeferred.cpp.o
+[23/116] cxx obj/src/jsc/bindings/sqlite/NodeSqlite.cpp.o
+[24/116] cxx obj/src/jsc/bindings/webcore/JSMIMEType.cpp.o
+[25/116] cxx obj/src/jsc/bindings/webcore/JSMessageEventCustom.cpp.o
+[26/116] cxx obj/src/jsc/bindings/webcore/JSWasmStreamingCompiler.cpp.o
+[27/116] cxx obj/src/jsc/bindings/webcore/streams/BunAsyncIterableSource.cpp.o
+[28/116] cxx obj/src/jsc/bindings/webcore/SerializedScriptValue.cpp.o
+[29/116] cxx obj/src/jsc/bindings/webcore/streams/BunStreamConsumers.cpp.o
+[30/116] cxx obj/src/jsc/bindings/webcore/streams/CrossRealmTransform.cpp.o
+[31/116] cxx obj/src/jsc/bindings/webcore/streams/JSByteLengthQueuingStrategy.cpp.o
+[32/116] cxx obj/src/jsc/bindings/webcore/streams/JSCompressionStream.cpp.o
+[33/116] cxx obj/src/jsc/bindings/webcore/streams/BunStreamSource.cpp.o
+[34/116] cxx obj/src/jsc/bindings/webcore/streams/JSCompressionStreamShared.cpp.o
+[35/116] cxx obj/src/jsc/bindings/webcore/streams/JSCountQueuingStrategy.cpp.o
+[36/116] cxx obj/src/jsc/bindings/webcore/streams/JSCrossRealmTransformState.cpp.o
+[37/116] cxx obj/src/jsc/bindings/webcore/streams/JSDecompressionStream.cpp.o
+[38/116] cxx obj/src/jsc/bindings/webcore/streams/JSPullIntoDescriptor.cpp.o
+[39/116] cxx obj/src/jsc/bindings/webcore/streams/JSDirectStreamController.cpp.o
+[40/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableByteStreamController.cpp.o
+[41/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamAsyncIterator.cpp.o
+[42/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStream.cpp.o
+[43/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamBYOBRequest.cpp.o
+[44/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamBYOBReader.cpp.o
+[45/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamDefaultController.cpp.o
+[46/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamReaderBase.cpp.o
+[47/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadableStreamDefaultReader.cpp.o
+[48/116] cxx obj/src/jsc/bindings/webcore/streams/JSReadRequest.cpp.o
+[49/116] cxx obj/src/jsc/bindings/webcore/streams/JSStreamAlgorithmContexts.cpp.o
+[50/116] cxx obj/src/jsc/bindings/webcore/streams/JSStreamsRuntime.cpp.o
+[51/116] cxx obj/src/jsc/bindings/webcore/streams/JSStreamPipeToOperation.cpp.o
+[52/116] cxx obj/src/jsc/bindings/webcore/streams/JSStreamTeeState.cpp.o
+[53/116] cxx obj/src/jsc/bindings/webcore/streams/JSTextEncoderStream.cpp.o
+[54/116] cxx obj/src/jsc/bindings/webcore/streams/JSTextDecoderStream.cpp.o
+[55/116] cxx obj/src/jsc/bindings/webcore/streams/JSTransformStream.cpp.o
+[56/116] cxx obj/src/jsc/bindings/webcore/streams/JSTransformStreamDefaultController.cpp.o
+[57/116] cxx obj/src/jsc/bindings/webcore/streams/JSWritableStream.cpp.o
+[58/116] cxx obj/src/jsc/bindings/webcore/streams/JSWritableStreamDefaultController.cpp.o
+[59/116] cxx obj/src/jsc/bindings/webcore/streams/JSWritableStreamDefaultWriter.cpp.o
+[60/116] cxx obj/src/jsc/bindings/webcore/streams/TransformStreamOperations.cpp.o
+[61/116] cxx obj/src/jsc/bindings/webcore/streams/WebStreamsExports.cpp.o
+[62/116] cxx obj/src/jsc/bindings/webcore/streams/ReadableStreamOperations.cpp.o
+[63/116] cxx obj/src/jsc/bindings/webcore/streams/WebStreamsInspectCustom.cpp.o
+[64/116] cxx obj/src/jsc/bindings/webcore/streams/WebStreamsMisc.cpp.o
+[65/116] cxx obj/src/jsc/bindings/webcore/streams/WritableStreamOperations.cpp.o
+[66/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CBC.cpp.o
+[67/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CBCOpenSSL.cpp.o
+[68/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CFB.cpp.o
+[69/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CFBOpenSSL.cpp.o
+[70/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CTROpenSSL.cpp.o
+[71/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_CTR.cpp.o
+[72/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_GCMOpenSSL.cpp.o
+[73/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_GCM.cpp.o
+[74/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmAES_KW.cpp.o
+[75/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmECDSA.cpp.o
+[76/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmHMAC.cpp.o
+[77/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmRSA_OAEP.cpp.o
+[78/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmRSA_PSS.cpp.o
+[79/116] cxx obj/src/jsc/bindings/webcrypto/CryptoAlgorithmRSASSA_PKCS1_v1_5.cpp.o
+[80/116] cxx obj/src/jsc/bindings/workaround-missing-symbols.cpp.o
+[81/116] cxx obj/src/jsc/bindings/xxhash3.cpp.o
+[82/116] cxx obj/src/jsc/bindings/webcrypto/SubtleCrypto.cpp.o
+[83/116] cxx obj/src/io/io_darwin.cpp.o
+[84/116] cxx obj/src/simdutf_sys/bun-simdutf.cpp.o
+[85/116] cxx obj/src/jsc/bindings/ZigGlobalObject.cpp.o
+[86/116] cxx obj/codegen/WebCoreJSBuiltins.cpp.o
+[87/116] cxx obj/codegen/ZigGeneratedClasses.cpp.o
+[88/116] cxx obj/codegen/GeneratedBindings.cpp.o
+[89/116] cxx obj/codegen/GeneratedSocketConfigBinaryType.cpp.o
+[90/116] cxx obj/codegen/JSSink.cpp.o
+[91/116] cxx obj/codegen/GeneratedSocketConfigHandlers.cpp.o
+[92/116] cxx obj/codegen/GeneratedSocketConfig.cpp.o
+[93/116] cxx obj/codegen/GeneratedSSLConfig.cpp.o
+[94/116] cc obj/packages/bun-usockets/src/bsd.c.o
+[95/116] cc obj/packages/bun-usockets/src/context.c.o
+[96/116] cxx obj/codegen/GeneratedFakeTimersConfig.cpp.o
+[97/116] cc obj/packages/bun-usockets/src/crypto/openssl.c.o
+[98/116] cc obj/packages/bun-usockets/src/eventing/libuv.c.o
+[99/116] cc obj/packages/bun-usockets/src/fault_inject.c.o
+[100/116] cc obj/packages/bun-usockets/src/eventing/epoll_kqueue.c.o
+[101/116] cc obj/packages/bun-usockets/src/loop.c.o
+[102/116] cc obj/packages/bun-usockets/src/node_quic_shim.c.o
+[103/116] cc obj/packages/bun-usockets/src/socket.c.o
+[104/116] cc obj/packages/bun-usockets/src/udp.c.o
+[105/116] cc obj/packages/bun-usockets/src/quic.c.o
+[106/116] cc obj/src/jsc/bindings/node/http/llhttp/http.c.o
+[107/116] cc obj/src/jsc/bindings/node/http/llhttp/api.c.o
+[108/116] cc obj/src/jsc/bindings/uv-posix-polyfills.c.o
+[109/116] cc obj/src/jsc/bindings/uv-posix-stubs.c.o
+[110/116] cc obj/codegen/InternalModuleRegistryConstants.S.o
+[111/116] cc obj/vendor/picohttpparser/picohttpparser.c.o
+[112/116] cc obj/src/jsc/bindings/node/http/llhttp/llhttp.c.o
+[113/116] check bun-debug link inputs for duplicate definitions
+[check] bun-debug 0 duplicate strong symbols (9.4s)
+[114/116] link bun-debug
+[115/116] check bun-debug exports, dynamic deps, initializers, hardening
+[check] bun-debug 688 exported symbols (36ms)
+[check] bun-debug 3 shared libraries (0ms)
+[check] bun-debug 353 imported symbols (4ms)
+[check] bun-debug 3 hardening properties (1ms)
+[check] bun-debug 12 debug sections (0ms)
+[116/116] check bun-debug --revision
+[check] bun-debug 1.4.3-debug+230ba940a (80ms)
+[build] done

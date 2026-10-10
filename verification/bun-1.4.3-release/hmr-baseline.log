@@ -1,0 +1,123 @@
+bun test v1.4.3 (c6da4a4d3)
+
+test/bake/dev/bundle.test.ts:
+Dev server testing directory: /tmp/bun-dev-test-zBxuxp
+dev| Started development server: http://localhost:41595
+dev| Bundled page in 2ms: index.html
+web| [E] TypeError: import_bun_wrap.__decoratorStart is not a function
+web|     at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+web|     at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+web|     at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+web|     at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697)
+[bake-harness] client subprocess failed to connect (attempt 1): Process exited (code=null) before line "/\\[Bun\\] (Live|Hot-module)-reloading socket connected, waiting for changes/" was found. Last output:
+    at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+    at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+    at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+    at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697). Retrying.
+web| [E] TypeError: import_bun_wrap.__decoratorStart is not a function
+web|     at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+web|     at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+web|     at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+web|     at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697)
+[bake-harness] client subprocess failed to connect (attempt 2): Process exited (code=null) before line "/\\[Bun\\] (Live|Hot-module)-reloading socket connected, waiting for changes/" was found. Last output:
+    at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+    at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+    at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+    at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697). Retrying.
+web| [E] TypeError: import_bun_wrap.__decoratorStart is not a function
+web|     at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+web|     at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+web|     at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+web|     at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+web|     at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+web|     at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697)
+
+1852 |           if (exitCodeMapStrings[this.exitCode]) {
+1853 |             reject(new Error(exitCodeMapStrings[this.exitCode]));
+1854 |           } else {
+1855 |             const tail = this.lines.slice(-10).join("\n");
+1856 |             reject(
+1857 |               new Error(
+                         ^
+error: Process exited (code=null) before line "/\\[Bun\\] (Live|Hot-module)-reloading socket connected, waiting for changes/" was found. Last output:
+    at <static_initializer> (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:77:33)
+    at decorators.ts (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:107:10)
+    at Me (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9014)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8905)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at Ge (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:9326)
+    at F (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:24:8813)
+    at eval (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6630)
+    at Object.anonymous [as execute] (http://localhost:41595/_bun/client/index-00000000f7d74e5d.js:27:6697)
+      at <anonymous> (/workspace/scratch/df137ea20b81/bun-build-source/test/bake/bake-harness.ts:1857:19)
+
+Failed. Files in /tmp/bun-dev-test-zBxuxp/bundle24
+error: 
+
+
+
+(fail)  DEV:bundle-24: TC39 decorators in the client HMR runtime [983.50ms]
+dev| Started development server: http://localhost:40277
+dev| Bundled page in 4ms: routes/index.ts + 1 more
+dev| 15 |   function accessorDecorator(value, context) {
+dev| 16 |     return { init: initialValue => initialValue + 3 };
+dev| 17 |   }
+dev| 18 | 
+dev| 19 |   @classDecorator
+dev| 20 |   export class Example {
+dev|               ^
+dev| TypeError: import_bun_wrap.__decoratorStart is not a function. (In 'import_bun_wrap.__decoratorStart(undefined)', 'import_bun_wrap.__decoratorStart' is undefined)
+dev|       at <anonymous> (/tmp/bun-dev-test-zBxuxp/bundle25/decorators.ts:20:10)
+dev|       at <anonymous> (/tmp/bun-dev-test-zBxuxp/bundle25/decorators.ts:19:4)
+dev|       at k (bake://server-runtime.js:2:5008)
+dev|       at O (bake://server-runtime.js:2:4901)
+dev|       at B (bake://server-runtime.js:2:5317)
+dev|       at O (bake://server-runtime.js:2:4811)
+dev|       at E (bake://server-runtime.js:2:1299)
+dev|       at map (1:11)
+dev|       at handleRequest (bake://server-runtime.js:5:3042)
+dev| GET - http://localhost:40277/ failed
+
+error: Expected response to be ok, but got 500 Internal Server Error
+    at test (/workspace/scratch/df137ea20b81/bun-build-source/test/bake/dev/bundle.test.ts:1026:26)
+Failed. Files in /tmp/bun-dev-test-zBxuxp/bundle25
+error: 
+
+
+
+(fail)  DEV:bundle-25: TC39 decorators in the server HMR runtime [69.04ms]
+
+ 0 pass
+ 23 filtered out
+ 2 fail
+ 1 expect() calls
+Ran 2 tests across 1 file. [1108.00ms]

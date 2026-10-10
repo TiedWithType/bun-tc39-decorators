@@ -1,0 +1,91 @@
+$ readelf -hW bun
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              DYN (Position-Independent Executable file)
+  Machine:                           AArch64
+  Version:                           0x1
+  Entry point address:               0x44b300
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          94476432 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         8
+  Size of section headers:           64 (bytes)
+  Number of section headers:         34
+  Section header string table index: 32
+$ readelf -lW bun
+
+Elf file type is DYN (Position-Independent Executable file)
+Entry point 0x44b300
+There are 8 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0001c0 0x0001c0 R   0x8
+  INTERP         0x000200 0x0000000000000200 0x0000000000000200 0x000015 0x000015 R   0x1
+      [Requesting program interpreter: /system/bin/linker64]
+  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x3b60610 0x3b60610 R E 0x4000
+  LOAD           0x3b64640 0x0000000003b64640 0x0000000003b64640 0x1ea4608 0x2036364 RW  0x10000
+  DYNAMIC        0x5a00018 0x0000000005a00018 0x0000000005a00018 0x0001d0 0x0001d0 RW  0x8
+  GNU_EH_FRAME   0x29b6a0 0x000000000029b6a0 0x000000000029b6a0 0x031024 0x031024 R   0x4
+  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0xc35000 RW  0
+  NOTE           0x000218 0x0000000000000218 0x0000000000000218 0x0000bc 0x0000bc R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.android.ident .note.gnu.build-id .dynsym .gnu.version .gnu.version_d .gnu.version_r .gnu.hash .hash .dynstr .rela.dyn .relr.dyn .rela.plt .bun_builtins .gcc_except_table .eh_frame_hdr .eh_frame .text .plt 
+   03     .data .rodata .data.rel.ro .bun __DATA,__wtf_config __DATA,__jsc_opcodes .init_array .dynamic .got .got.plt .bss 
+   04     .dynamic 
+   05     .eh_frame_hdr 
+   06     
+   07     .note.android.ident .note.gnu.build-id 
+$ readelf -dW bun
+
+Dynamic section at offset 0x5a00018 contains 29 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x000000006ffffffb (FLAGS_1)            Flags: PIE
+ 0x0000000000000015 (DEBUG)              0x0
+ 0x0000000060000011 (Operating System specific: 60000011)                0xffa8
+ 0x0000000060000012 (Operating System specific: 60000012)                0x1c5
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006fffe000 (Operating System specific: 6fffe000)                0x10170
+ 0x000000006fffe001 (Operating System specific: 6fffe001)                0x5240
+ 0x000000006fffe003 (Operating System specific: 6fffe003)                0x8
+ 0x0000000000000017 (JMPREL)             0x153b0
+ 0x0000000000000002 (PLTRELSZ)           9096 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x5a08058
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x2d8
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0xa804
+ 0x000000000000000a (STRSZ)              22435 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x70e8
+ 0x0000000000000004 (HASH)               0x865c
+ 0x0000000000000019 (INIT_ARRAY)         0x5a00000
+ 0x000000000000001b (INIT_ARRAYSZ)       24 (bytes)
+ 0x000000006ffffff0 (VERSYM)             0x67b8
+ 0x000000006ffffffc (VERDEF)             0x7020
+ 0x000000006ffffffd (VERDEFNUM)          2
+ 0x000000006ffffffe (VERNEED)            0x7058
+ 0x000000006fffffff (VERNEEDNUM)         3
+ 0x0000000000000000 (NULL)               0x0
+$ readelf -nW bun
+
+Displaying notes found in: .note.android.ident
+  Owner                Data size 	Description
+  Android              0x00000084	NT_VERSION (version)	   description data: 1c 00 00 00 72 32 37 63 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 31 32 34 37 39 30 31 38 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+
+Displaying notes found in: .note.gnu.build-id
+  Owner                Data size 	Description
+  GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)	    Build ID: 7360531150cf10cbf4a47aeb5aa0c1f7bef4dfb0

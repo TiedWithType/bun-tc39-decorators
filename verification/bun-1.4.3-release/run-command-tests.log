@@ -1,0 +1,21 @@
+$ BUN_DEBUG_QUIET_LOGS=1 bun scripts/build.ts --profile=debug --quiet "--cache-dir=/workspace/scratch/df137ea20b81/build-cache" "--canary=off" "-j2" test test/cli/run/run_command.test.ts
+rustup spent 10s installing the pinned toolchain (nightly-2026-09-15); it was missing or incomplete on this machine
+bun test v1.4.3 (230ba940a)
+
+test/cli/run/run_command.test.ts:
+(pass) bun > should error with missing script [119.03ms]
+(pass) bun > an empty-string script value is not a runnable script [112.90ms]
+(skip) [windows] A file in drive root runs
+(pass) Ctrl+C is left to the script and bun run reports its exit (--shell=bun) [128.80ms]
+(pass) Ctrl+C is left to the script and bun run reports its exit (--shell=system) [103.41ms]
+(pass) a script killed by Ctrl+C stops bun run (--shell=bun) [124.48ms]
+(pass) a script killed by Ctrl+C stops bun run (--shell=system) [104.02ms]
+(pass) Ctrl+C is left to the script and bun run reports its exit (<bin>) [99.72ms]
+(pass) a script killed by Ctrl+C stops bun run (<bin>) [90.30ms]
+(skip) package scripts run beneath opaque Android shared-storage ancestors
+
+ 8 pass
+ 2 skip
+ 0 fail
+ 24 expect() calls
+Ran 10 tests across 1 file. [2.01s]

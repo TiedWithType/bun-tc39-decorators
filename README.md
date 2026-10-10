@@ -40,17 +40,19 @@ commit `c6da4a4d3010e5553438c60f6bd76d981976867c`.
 
 ## Szybki start — Termux
 
-Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
-`bun-tc39` jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
-(Android 9 lub nowszy). Architektura telefonu: `uname -m`.
+Nowa kompilacja release z oficjalnego tagu **Bun 1.4.3** zawiera wszystkie
+cztery patche i jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
+(Android 9 lub nowszy). Oczekiwany revision: `1.4.3+230ba940a`.
+Architektura telefonu: `uname -m`.
 
-Ostatni wcześniej przygotowany build ma wersję `1.4.3` i revision `1.4.3+daf9b8beb`.
-Powstał na bazie sprzed oficjalnego wydania. Przeniesienie patchy na tag
-`bun-v1.4.3` wymaga nowej kompilacji; poniższe wyniki dotyczą wcześniejszej binarki.
-Zawiera wszystkie cztery patche. Przeszedł kompilację i kontrole statyczne
-ELF oraz 14/14 kontroli runtime na telefonie, w tym instalacje default
-i copyfile oraz oba testy ochrony symlinków.
-Wyniki: [verification/termux-install-syscalls/results.md](verification/termux-install-syscalls/results.md).
+Build i ścisłe kontrole binarki ELF przeszły. Testy TC39/HMR na nowym
+buildzie Linux debug: **2/2**, a testy polecenia `run`: **8 passed, 2 skipped**.
+Nowej binarki Androida nie uruchamiano jeszcze na telefonie.
+[Raport nowej kompilacji](verification/bun-1.4.3-release/results.md).
+
+Wcześniejszy build `1.4.3+daf9b8beb` powstał przed oficjalnym wydaniem
+i przeszedł 14/14 kontroli runtime na telefonie. To historyczne wyniki
+innej binarki: [raport](verification/termux-install-syscalls/results.md).
 
 Projekt diagnostyczny umieść w prywatnym katalogu Termuksa, np. pod `~`.
 

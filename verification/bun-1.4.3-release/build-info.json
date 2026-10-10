@@ -1,0 +1,97 @@
+{
+  "version": "1.4.3",
+  "expected_android_revision": "1.4.3+230ba940a",
+  "upstream_tag": "bun-v1.4.3",
+  "upstream_commit": "c6da4a4d3010e5553438c60f6bd76d981976867c",
+  "patched_source_commit": "230ba940a2a6bf8c10947b5f0eb73c061b640dba",
+  "patches": [
+    "bun-hmr-tc39.patch",
+    "bun-termux-cwd.patch",
+    "bun-termux-open-browser.patch",
+    "bun-termux-install-syscalls.patch"
+  ],
+  "target": "aarch64-linux-android",
+  "android_api": 28,
+  "profile": "release",
+  "created_at": "2026-10-10T20:37:21.346805+00:00",
+  "toolchain": {
+    "bootstrap_bun": "1.4.3",
+    "rust_channel": "nightly-2026-09-15",
+    "rustc": "1.100.0-nightly (574ff7d98 2026-09-14)",
+    "rust_llvm": "23.1.1",
+    "clang": "23.1.2 (85ac560262434c9ccfc0c183ec22d4138ed647fb)",
+    "lld": "23.1.2",
+    "android_ndk": "27.2.12479018 (r27c)",
+    "webkit": "0c06faadf65bf8e8c8ad3a5a8aca83e1e9ed653f",
+    "ninja": "oven-sh/ninja bun-ninja-5ecd8831"
+  },
+  "build": {
+    "command": "bun scripts/build.ts --profile=release --os=linux --arch=aarch64 --abi=android --android-ndk=<NDK-r27c> --build-dir=build/android-aarch64 --cache-dir=<cache> --canary=off -j2",
+    "ninja_jobs": 2,
+    "linker_threads": 2,
+    "thinlto_jobs": 1,
+    "cross_language_lto": false,
+    "rust_thinlto": true,
+    "tar_no_same_owner": true
+  },
+  "binary": {
+    "file": "bun",
+    "bytes": 94478608,
+    "sha256": "40470c49089bfb57b05f1469066381ddc744262c1160167e9ee1ec287e377a2f",
+    "format": "ELF64 little endian PIE",
+    "machine": "AArch64",
+    "interpreter": "/system/bin/linker64",
+    "minimum_android_api": 28,
+    "load_alignments": [
+      16384,
+      65536
+    ],
+    "compatible_with_16KiB_pages": true,
+    "non_executable_stack": true,
+    "no_rwx_load_segment": true,
+    "no_tls_segment": true,
+    "shared_libraries": [
+      "libc.so",
+      "libm.so",
+      "libdl.so"
+    ],
+    "debug_sections_removed": true,
+    "source_revision_found": "230ba940a"
+  },
+  "verification": {
+    "android_release_build": "passed",
+    "binary_expectations_strict": "passed",
+    "duplicate_strong_symbols": 0,
+    "native_linux_debug_build": "passed",
+    "native_linux_revision": "1.4.3-debug+230ba940a",
+    "hmr_baseline": {
+      "pass": 0,
+      "fail": 2,
+      "expected_failure": true
+    },
+    "hmr_patched_native": {
+      "pass": 2,
+      "fail": 0
+    },
+    "run_command_native": {
+      "pass": 8,
+      "skip": 2,
+      "fail": 0
+    },
+    "ancestor_predicate_linux": {
+      "pass": 5,
+      "fail": 0
+    },
+    "ancestor_predicate_android_cfg": {
+      "pass": 5,
+      "fail": 0
+    },
+    "ancestor_predicate_android_baseline": "expected failure",
+    "opener_mocked_source": {
+      "pass": 9,
+      "fail": 0
+    },
+    "android_device_tests": "not run",
+    "rust_full_cross_target_matrix": "not run"
+  }
+}
