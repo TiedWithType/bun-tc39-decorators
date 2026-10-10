@@ -31,10 +31,10 @@ index 5c124529..8d0d6549 100644
              Bun.spawn(["xdg-open", url]).exited.catch(() => {});
            }
 diff --git a/src/resolver/resolver.rs b/src/resolver/resolver.rs
-index 3615a6ef..4f7a17a1 100644
+index 75884b68..b811bfe5 100644
 --- a/src/resolver/resolver.rs
 +++ b/src/resolver/resolver.rs
-@@ -4491,18 +4491,18 @@ impl<'a> Resolver<'a> {
+@@ -4490,18 +4490,18 @@ impl<'a> Resolver<'a> {
                              {
                                  return Ok(None);
                              }
@@ -59,7 +59,7 @@ index 3615a6ef..4f7a17a1 100644
                                      bstr::BStr::new(queue_top_unsafe_path),
                                      bstr::BStr::new(err.name())
                                  );
-@@ -4540,7 +4540,7 @@ impl<'a> Resolver<'a> {
+@@ -4539,7 +4539,7 @@ impl<'a> Resolver<'a> {
                  }
              };
 
@@ -68,7 +68,7 @@ index 3615a6ef..4f7a17a1 100644
              // an opaque directory; there is nothing to track or close then.
              if !queue_top.fd.is_valid() && open_dir.is_valid() {
                  Fs::FileSystem::set_max_fd(open_dir.native());
-@@ -4636,7 +4636,7 @@ impl<'a> Resolver<'a> {
+@@ -4635,7 +4635,7 @@ impl<'a> Resolver<'a> {
                  // still rehash from there (cheap relative to starting at 0).
                  new_entry.data.reserve(64);
 
@@ -392,7 +392,7 @@ index 00000000..70049499
 +  }
 +});
 diff --git a/test/cli/run/run_command.test.ts b/test/cli/run/run_command.test.ts
-index 2a746db7..20849ebf 100644
+index bac12636..4558f9dd 100644
 --- a/test/cli/run/run_command.test.ts
 +++ b/test/cli/run/run_command.test.ts
 @@ -1,8 +1,8 @@
@@ -405,7 +405,7 @@ index 2a746db7..20849ebf 100644
 +import { bunEnv, bunExe, bunRun, isAndroid, isWindows, tempDir } from "harness";
  import { join } from "path";
 
- let cwd: string;
+ let cwd: string | undefined;
 @@ -179,3 +179,63 @@ for (const mode of ctrlCModes) {
      }
    });

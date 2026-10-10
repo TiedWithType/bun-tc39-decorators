@@ -1,0 +1,38 @@
+{
+  "tag": "bun-v1.4.3",
+  "commit": "c6da4a4d3010e5553438c60f6bd76d981976867c",
+  "files": [
+    {
+      "path": "src/js/internal/html.ts",
+      "git_blob_sha": "5c1245290cad6d5652cf6e35bad116646f938543"
+    },
+    {
+      "path": "src/resolver/resolver.rs",
+      "git_blob_sha": "75884b687f9ff106a3b91e8cbbecebcf7e75f147"
+    },
+    {
+      "path": "src/runtime/bake/bake.private.d.ts",
+      "git_blob_sha": "1c8649f07bbbd2360f772dc3dd9c7528eac95ec7"
+    },
+    {
+      "path": "src/sys/lib.rs",
+      "git_blob_sha": "c89037345c8d2ea9e2221a3a41455760ee3046dc"
+    },
+    {
+      "path": "test/bake/dev/bundle.test.ts",
+      "git_blob_sha": "3b3f8f9a7d6e01d3d49230ae3fc7aaaba36e9181"
+    },
+    {
+      "path": "test/cli/run/run_command.test.ts",
+      "git_blob_sha": "bac1263657f3b81ee69214f9563f09643518062c"
+    },
+    {
+      "path": "src/runtime/bake/hmr-module.ts",
+      "git_blob_sha": "a9d29fd498639fc420bd0367cc72db23ba1135ea"
+    },
+    {
+      "path": "src/sys/linux_syscall.rs",
+      "git_blob_sha": "374ac6342229934c25367702e91a3c847460a691"
+    }
+  ]
+}

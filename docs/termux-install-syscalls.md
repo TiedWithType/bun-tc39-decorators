@@ -1,7 +1,9 @@
 # Termux: SIGSYS podczas instalacji programów z pakietów
 
 Patch: [bun-termux-install-syscalls.patch](../patches/bun-termux-install-syscalls.patch).
-Baza: `bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (Bun 1.4.3).
+Baza: oficjalny tag `bun-v1.4.3`,
+commit `c6da4a4d3010e5553438c60f6bd76d981976867c`.
+[Weryfikacja na tagu wydania](../verification/bun-1.4.3-release/results.md).
 Patch zbiorczy zawiera tę poprawkę razem z HMR/TC39, CWD i otwieraniem przeglądarki.
 
 ## Potwierdzenie na urządzeniu
@@ -51,10 +53,10 @@ bez zależności z registry. Sprawdzają instalację z backendem domyślnym
 i copyfile, poprawne dowiązanie `.bin`, bit wykonywalności oraz ochronę
 pliku wskazanego przez końcowy symlink i katalog poza pakietem.
 
-W checkoutcie źródeł Bun z gotową binarką jako runtime testów:
+W checkoutcie źródeł Bun po przygotowaniu toolchainu:
 
 ```sh
-bun test test/cli/install/termux-bin.test.ts
+bun bd test test/cli/install/termux-bin.test.ts
 ```
 
 Dla telefonu bez checkoutu całego Bun użyj narzędzi z tego repo:
@@ -73,7 +75,7 @@ Nowy diagnostyczny runner sprawdza również dwa przypadki symlinków.
 Wynik bez błędów nie potwierdza interaktywnego HMR i skrótu przeglądarki;
 te należy sprawdzić przez `bun-patched --watch server.ts`.
 
-Aktualne metadane i wyniki budowania:
+Metadane i wyniki wcześniejszego buildu, sprzed oficjalnego wydania:
 `verification/termux-install-syscalls/`. Log `device-after.log` potwierdza
 14/14 kontroli na Android ARM64 z nową binarką, w tym instalacje default
 i copyfile oraz poprawne `.bin`. Testy `symlinkFinal` i `symlinkParent`

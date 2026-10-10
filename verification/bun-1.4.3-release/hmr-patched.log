@@ -1,0 +1,24 @@
+$ BUN_DEBUG_QUIET_LOGS=1 bun scripts/build.ts --profile=debug --quiet "--cache-dir=/workspace/scratch/df137ea20b81/build-cache" "--canary=off" "-j2" test test/bake/dev/bundle.test.ts -t "TC39 decorators"
+rustup spent 10s installing the pinned toolchain (nightly-2026-09-15); it was missing or incomplete on this machine
+bun test v1.4.3 (230ba940a)
+
+test/bake/dev/bundle.test.ts:
+Dev server testing directory: /tmp/bun-dev-test-Jez2SD
+dev| Started development server: http://localhost:42503
+dev| Bundled page in 52ms: index.html
+web| [I] [Bun] Hot-module-reloading socket connected, waiting for changes...
+dev| Reloaded in 38ms: decorators.ts
+(pass)  DEV:bundle-24: TC39 decorators in the client HMR runtime [2030.12ms]
+dev| Started development server: http://localhost:36303
+dev| Bundled page in 113ms: routes/index.ts + 1 more
+dev| [Bun] Hot update was not accepted because it or its importers do not call `import.meta.hot.accept`. To prevent full page reloads, call `import.meta.hot.accept` in one of the following files to handle the update:
+dev| 
+dev| Module "decorators.ts" is not accepted by routes/index.ts,
+dev| Reloaded in 49ms: decorators.ts
+(pass)  DEV:bundle-25: TC39 decorators in the server HMR runtime [1602.30ms]
+
+ 2 pass
+ 23 filtered out
+ 0 fail
+ 5 expect() calls
+Ran 2 tests across 1 file. [6.14s]

@@ -1,0 +1,10 @@
+PASS: Termux opener and literal URL argument
+PASS: xdg-open fallback
+PASS: missing helpers preserve server
+PASS: spawn failure preserves server
+PASS: wait failure preserves server
+PASS: nonzero child exit is reported
+PASS: linux
+PASS: darwin
+PASS: win32
+9/9 source-level checks passed; no Android device was used.

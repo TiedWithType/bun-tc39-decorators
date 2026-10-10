@@ -1,0 +1,7 @@
+{
+  "filename": "bun-1.4.3-termux-arm64.zip",
+  "bytes": 39195031,
+  "sha256": "9e0653b41a796655aa2d42ebd9745a0f2d411d223c4c05f58ac6230e030891c1",
+  "bun_sha256": "40470c49089bfb57b05f1469066381ddc744262c1160167e9ee1ec287e377a2f",
+  "zip_integrity": "CRC and all packaged file SHA256 checks passed"
+}

@@ -1,0 +1,24 @@
+{
+  "file": "bun",
+  "bytes": 94478608,
+  "sha256": "40470c49089bfb57b05f1469066381ddc744262c1160167e9ee1ec287e377a2f",
+  "format": "ELF64 little endian PIE",
+  "machine": "AArch64",
+  "interpreter": "/system/bin/linker64",
+  "minimum_android_api": 28,
+  "load_alignments": [
+    16384,
+    65536
+  ],
+  "compatible_with_16KiB_pages": true,
+  "non_executable_stack": true,
+  "no_rwx_load_segment": true,
+  "no_tls_segment": true,
+  "shared_libraries": [
+    "libc.so",
+    "libm.so",
+    "libdl.so"
+  ],
+  "debug_sections_removed": true,
+  "source_revision_found": "230ba940a"
+}

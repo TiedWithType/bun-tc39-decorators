@@ -1,0 +1,13 @@
+Bun tag: bun-v1.4.3
+Bun commit: c6da4a4d3010e5553438c60f6bd76d981976867c
+Scope: hash-verified snapshots of every existing file touched by the patches.
+PASS: 8 baseline file blobs match the official tag.
+PASS: bun-hmr-tc39.patch: git apply --check --index, apply and git diff --cached --check.
+PASS: bun-termux-cwd.patch: git apply --check --index, apply and git diff --cached --check.
+PASS: bun-termux-open-browser.patch: git apply --check --index, apply and git diff --cached --check.
+PASS: bun-termux-install-syscalls.patch: git apply --check --index, apply and git diff --cached --check.
+PASS: combined patch: git apply --check --index, apply and git diff --cached --check.
+PASS: combined patch and the four separate patches produce byte-identical trees (9 changed files).
+PASS: the original patch fails at the changed run_command.test.ts context; the rebased patch applies.
+PASS: reversing the combined patch restores the exact baseline tree.
+NOT RUN: Bun build, bun bd tests, Rust predicate tests and Android device tests (required runtimes/toolchains unavailable).

@@ -3,7 +3,7 @@ import subprocess,os
 import argparse, tempfile, shutil
 parser = argparse.ArgumentParser(description="Test only the resolver ancestor error predicate; not Android syscalls")
 parser.add_argument("checkout", type=Path, help="Patched Bun source checkout")
-parser.add_argument("--base", default="bc7a813b10b6ef8accc00c931b9a501331ac8c5c")
+parser.add_argument("--base", default="c6da4a4d3010e5553438c60f6bd76d981976867c")
 options = parser.parse_args()
 checkout = options.checkout.resolve()
 source = checkout / "src/resolver/resolver.rs"
