@@ -48,13 +48,15 @@ w prywatnym katalogu Termuksa, nawet gdy projekt jest w pamięci współdzielone
 
 ## Pobranie i zastosowanie
 
-Sprawdzona baza obu patchy: `bc7a813b10b6ef8accc00c931b9a501331ac8c5c`.
+Sprawdzona baza obu patchy: oficjalny tag `bun-v1.4.3`,
+commit `c6da4a4d3010e5553438c60f6bd76d981976867c`.
+[Weryfikacja na tagu wydania](../verification/bun-1.4.3-release/results.md).
 Nałożenie na inną rewizję wymaga osobnej kontroli.
 
 W checkoutcie **źródeł Bun**, nie projektu z dekoratorami:
 
 ```sh
-git checkout bc7a813b10b6ef8accc00c931b9a501331ac8c5c
+git checkout --detach c6da4a4d3010e5553438c60f6bd76d981976867c
 curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-termux-cwd.patch -o bun-termux-cwd.patch
 git apply --check bun-termux-cwd.patch
 git apply bun-termux-cwd.patch

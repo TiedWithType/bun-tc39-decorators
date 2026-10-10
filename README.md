@@ -18,6 +18,10 @@ Bun. W projekcie nie ma pluginu transpilacji przez TypeScript.
 i syscalli instalatora
 w Termuksie. Nakładaj patch zbiorczy albo patche osobne.
 
+Aktualna baza to oficjalny tag **`bun-v1.4.3`** z 10 października 2026,
+commit `c6da4a4d3010e5553438c60f6bd76d981976867c`.
+[Weryfikacja przeniesienia patchy](verification/bun-1.4.3-release/results.md).
+
 **Osobna poprawka HMR:** [patch w repo](patches/bun-hmr-tc39.patch).
 **Zgłoszenie upstream:** [oven-sh/bun #44463](https://github.com/oven-sh/bun/issues/44463).
 
@@ -40,7 +44,9 @@ Wymagana jest poprawiona binarka Bun. Przygotowana wcześniej kompilacja
 `bun-tc39` jest przeznaczona dla **Android ARM64 / aarch64, API 28+**
 (Android 9 lub nowszy). Architektura telefonu: `uname -m`.
 
-Ostatni wspólny build ma wersję `1.4.3` i revision `1.4.3+daf9b8beb`.
+Ostatni wcześniej przygotowany build ma wersję `1.4.3` i revision `1.4.3+daf9b8beb`.
+Powstał na bazie sprzed oficjalnego wydania. Przeniesienie patchy na tag
+`bun-v1.4.3` wymaga nowej kompilacji; poniższe wyniki dotyczą wcześniejszej binarki.
 Zawiera wszystkie cztery patche. Przeszedł kompilację i kontrole statyczne
 ELF oraz 14/14 kontroli runtime na telefonie, w tym instalacje default
 i copyfile oraz oba testy ochrony symlinków.
@@ -206,7 +212,8 @@ sprawdź także terminal i konsolę przeglądarki.
 
 ## Zastosowanie patcha zbiorczego w źródłach Bun
 
-Sprawdzona baza: `bc7a813b10b6ef8accc00c931b9a501331ac8c5c` (Bun 1.4.3).
+Sprawdzona baza: oficjalny tag `bun-v1.4.3`,
+commit `c6da4a4d3010e5553438c60f6bd76d981976867c`.
 Patch zbiorczy zawiera wszystkie cztery poprawki. Stosuj go na czystej bazie;
 nie nakładaj go dodatkowo na źródła z nałożonymi patchami osobnymi.
 Na innej rewizji potrzebna jest osobna weryfikacja.
@@ -214,9 +221,9 @@ Na innej rewizji potrzebna jest osobna weryfikacja.
 W osobnym katalogu **źródeł Bun**:
 
 ```sh
-git clone https://github.com/oven-sh/bun.git bun-source
+git clone --branch bun-v1.4.3 --depth 1 https://github.com/oven-sh/bun.git bun-source
 cd bun-source
-git checkout bc7a813b10b6ef8accc00c931b9a501331ac8c5c
+git checkout --detach c6da4a4d3010e5553438c60f6bd76d981976867c
 curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.3-termux-combined.patch -o ../bun-1.4.3-termux-combined.patch
 git apply --check ../bun-1.4.3-termux-combined.patch
 git apply ../bun-1.4.3-termux-combined.patch
@@ -228,6 +235,7 @@ Testy na obsługiwanym hoście po przygotowaniu toolchainu Bun:
 ```sh
 bun bd test test/bake/dev/bundle.test.ts -t "TC39 decorators"
 bun bd test test/cli/run/run_command.test.ts
+bun bd test test/cli/install/termux-bin.test.ts
 ```
 
 Test CWD wymaga Androida i montowania odtwarzającego błąd niedostępnego
@@ -256,6 +264,13 @@ wybiera `termux-open-url`, a następnie `xdg-open` z PATH i raportuje błędy
 uruchomienia. Nie wywołuje bezpośrednio `/system/bin/am`.
 
 ## Weryfikacja
+
+Aktualne patche sprawdzono na plikach oficjalnego tagu `bun-v1.4.3`:
+nakładają się osobno i razem, dają identyczne pliki, a kontrola skrótu
+przeglądarki przechodzi 9/9. Nie wykonano nowego buildu ani testów runtime
+Bun/Androida dla tej bazy. [Wyniki](verification/bun-1.4.3-release/results.md).
+
+Poniższe wyniki dotyczą wcześniejszej bazy i wcześniejszych kompilacji:
 
 - Projekt `DEBUG` przeszedł sprawdzanie typów TypeScript.
 - Bundle HMR z poprawionego Bun przeszedł sprawdzenie czterech dekoratorów,
@@ -290,7 +305,7 @@ bun-tc39 x --bun tsc --noEmit
 
 Zalecany wspólny wariant to **patch zbiorczy**. Osobne patche pozwalają
 wybrać pojedynczą poprawkę. Wszystkie odnoszą się do bazy
-`bc7a813b10b6ef8accc00c931b9a501331ac8c5c`.
+`c6da4a4d3010e5553438c60f6bd76d981976867c` (`bun-v1.4.3`).
 
 Narzędzia i wyniki:
 
