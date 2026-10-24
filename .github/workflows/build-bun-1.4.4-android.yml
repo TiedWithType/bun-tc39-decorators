@@ -1,0 +1,112 @@
+name: Build Bun 1.4.4 — TC39 decorators (Termux ARM64)
+
+on:
+  push:
+    branches:
+      - "fix/bun-1.4.4-tc39-hmr"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android-arm64:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - name: Checkout patch repository
+        uses: actions/checkout@v4
+
+      - name: Free disk space for JavaScriptCore
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          large-packages: true
+          android: true
+          dotnet: true
+          haskell: true
+          swap-storage: true
+
+      - name: Install Bun bootstrap
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Install host build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build python3 perl pkg-config git curl wget unzip zip file binutils
+
+      - name: Install LLVM/Clang 23
+        run: |
+          curl -fsSL https://apt.llvm.org/llvm.sh -o /tmp/llvm.sh
+          sudo bash /tmp/llvm.sh 23
+          /usr/lib/llvm-23/bin/clang --version
+
+      - name: Install Android NDK r27c
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "ndk;27.2.12479018"
+
+      - name: Install pinned Rust toolchain
+        run: |
+          rustup toolchain install nightly-2026-09-15 --profile minimal --target aarch64-linux-android
+          rustup default nightly-2026-09-15
+          rustc --version
+
+      - name: Checkout Bun 1.4.4 sources
+        uses: actions/checkout@v4
+        with:
+          repository: oven-sh/bun
+          ref: 38afee6c84fcf48c0edb2466aa4b27d287a59c30
+          path: bun
+          fetch-depth: 1
+
+      - name: Apply TC39 HMR patch
+        working-directory: bun
+        run: |
+          git apply --check ../patches/bun-1.4.4-hmr-tc39.patch
+          git apply ../patches/bun-1.4.4-hmr-tc39.patch
+          git diff --check
+
+      - name: Install Bun source dependencies
+        working-directory: bun
+        run: bun install --frozen-lockfile
+
+      - name: Build Android ARM64 release binary
+        working-directory: bun
+        env:
+          ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/27.2.12479018
+          RUSTUP_TOOLCHAIN: nightly-2026-09-15
+        run: |
+          bun scripts/build.ts --profile=release --os=linux --arch=aarch64 --abi=android \
+            --android-ndk="$ANDROID_NDK_ROOT" --build-dir=build/android-aarch64 -j1
+
+      - name: Verify and package binary
+        working-directory: bun
+        run: |
+          test -x build/android-aarch64/bun
+          file build/android-aarch64/bun
+          readelf -h build/android-aarch64/bun | grep -E 'Machine:.*AArch64'
+          readelf -l build/android-aarch64/bun | grep -F '/system/bin/linker64'
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          cp build/android-aarch64/bun "$GITHUB_WORKSPACE/out/bun"
+          {
+            echo "source_tag=bun-v1.4.4"
+            echo "source_commit=38afee6c84fcf48c0edb2466aa4b27d287a59c30"
+            echo "patch=TC39 HMR helper registration"
+            echo "target=aarch64-linux-android"
+            echo "android_api=28"
+            echo "profile=release"
+            echo "device_execution_verified=false"
+          } > "$GITHUB_WORKSPACE/out/build-info.txt"
+          cd "$GITHUB_WORKSPACE/out"
+          sha256sum bun > SHA256SUMS
+
+      - name: Upload patched Bun binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-1.4.4-tc39-hmr-android-aarch64
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
