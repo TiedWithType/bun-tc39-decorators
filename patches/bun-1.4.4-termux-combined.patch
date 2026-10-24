@@ -1,0 +1,268 @@
+diff --git a/src/resolver/resolver.rs b/src/resolver/resolver.rs
+index 3615a6ef..4f7a17a1 100644
+--- a/src/resolver/resolver.rs
++++ b/src/resolver/resolver.rs
+@@ -4491,18 +4491,18 @@ impl<'a> Resolver<'a> {
+                             {
+                                 return Ok(None);
+                             }
+-                            // A permission-denied ancestor (sandboxed drive roots, x-only
+-                            // shared dirs) is treated as opaque and empty, like the
+-                            // ENOTDIR tolerance; the requested directory itself stays fatal.
++                            // Android shared-storage ancestors can report ENOENT while
++                            // their descendants are accessible. Never mask the target's error.
+                             if queue_slice_len > 0
+-                                && matches!(
++                                && (matches!(
+                                     err,
+                                     crate::Error::Sys(bun_errno::SystemErrno::EPERM)
+                                         | crate::Error::Sys(bun_errno::SystemErrno::EACCES)
+-                                )
++                                ) || (cfg!(target_os = "android")
++                                    && err == crate::Error::Sys(bun_errno::SystemErrno::ENOENT)))
+                             {
+                                 debuglog!(
+-                                    "treating permission-denied ancestor \"{}\" as empty: {}",
++                                    "treating inaccessible ancestor \"{}\" as empty: {}",
+                                     bstr::BStr::new(queue_top_unsafe_path),
+                                     bstr::BStr::new(err.name())
+                                 );
+diff --git a/src/runtime/bake/bake.private.d.ts b/src/runtime/bake/bake.private.d.ts
+index 1c8649f0..e8ea47d1 100644
+--- a/src/runtime/bake/bake.private.d.ts
++++ b/src/runtime/bake/bake.private.d.ts
+@@ -147,6 +147,16 @@ declare module "react-dom/server.node" {
+
+ declare module "bun:wrap" {
+   export const __name: unique symbol;
++  export const __privateAdd: unique symbol;
++  export const __privateGet: unique symbol;
++  export const __privateIn: unique symbol;
++  export const __privateMethod: unique symbol;
++  export const __privateSet: unique symbol;
++  export const __publicField: unique symbol;
++  export const __decorateElement: unique symbol;
++  export const __decoratorMetadata: unique symbol;
++  export const __decoratorStart: unique symbol;
++  export const __runInitializers: unique symbol;
+   export const __legacyDecorateClassTS: unique symbol;
+   export const __legacyDecorateParamTS: unique symbol;
+   export const __legacyMetadataTS: unique symbol;
+diff --git a/src/runtime/bake/hmr-module.ts b/src/runtime/bake/hmr-module.ts
+index a9d29fd4..9fe3ae84 100644
+--- a/src/runtime/bake/hmr-module.ts
++++ b/src/runtime/bake/hmr-module.ts
+@@ -8,12 +8,22 @@
+ // This was done to make incremental updates as isolated as possible.
+ import {
+   __callDispose,
++  __decorateElement,
++  __decoratorMetadata,
++  __decoratorStart,
+   __EARLY_RETURN_SENTINEL,
+   __legacyDecorateClassTS,
+   __legacyDecorateParamTS,
+   __legacyMetadataTS,
+   __MEMO_CACHE_SENTINEL,
+   __name,
++  __privateAdd,
++  __privateGet,
++  __privateIn,
++  __privateMethod,
++  __privateSet,
++  __publicField,
++  __runInitializers,
+   __using,
+ } from "../../runtime.bun";
+ // This import is different based on client vs server side.
+@@ -909,6 +919,16 @@ declare global {
+ // provided by this file instead of the bundler
+ registerSynthetic("bun:wrap", {
+   __name,
++  __privateAdd,
++  __privateGet,
++  __privateIn,
++  __privateMethod,
++  __privateSet,
++  __publicField,
++  __decorateElement,
++  __decoratorMetadata,
++  __decoratorStart,
++  __runInitializers,
+   __legacyDecorateClassTS,
+   __legacyDecorateParamTS,
+   __legacyMetadataTS,
+diff --git a/test/bake/dev/bundle.test.ts b/test/bake/dev/bundle.test.ts
+index 3b3f8f9a..db70e702 100644
+--- a/test/bake/dev/bundle.test.ts
++++ b/test/bake/dev/bundle.test.ts
+@@ -940,3 +940,91 @@ devTest("a render() that does not return a Response is reported as that", {
+     }).toEqual({ status: 500, saysWhatIsWrong: true, referenceError: false });
+   },
+ });
++
++const tc39DecoratorFixture = `
++  function classDecorator(value, context) {
++    context.metadata.label = "tc39";
++    context.addInitializer(function () {
++      this.ready = this.seed + 1;
++    });
++  }
++  function fieldDecorator(value, context) {
++    return initialValue => initialValue * 2;
++  }
++  function methodDecorator(value, context) {
++    return function () {
++      return value.call(this) + 4;
++    };
++  }
++  function accessorDecorator(value, context) {
++    return { init: initialValue => initialValue + 3 };
++  }
++
++  @classDecorator
++  export class Example {
++    static seed = 10;
++    static ready;
++    hasHidden() {
++      return #hidden in this;
++    }
++    @fieldDecorator value = 2;
++    @accessorDecorator accessor score = 5;
++    @fieldDecorator #hidden = 3;
++    @methodDecorator #secret() {
++      this.#hidden = this.#hidden + 1;
++      return this.#hidden;
++    }
++    @methodDecorator result() {
++      return this.value + this.score + this.#secret();
++    }
++  }
++
++  export function report() {
++    const instance = new Example();
++    const metadata = Example[Symbol.metadata ?? Symbol.for("Symbol.metadata")];
++    return [instance.value, instance.score, instance.result(), Example.ready, metadata.label, instance.hasHidden()].join(":");
++  }
++`;
++
++const tc39DecoratorFiles = {
++  "tsconfig.json": JSON.stringify({
++    compilerOptions: { experimentalDecorators: false, emitDecoratorMetadata: false },
++  }),
++  "decorators.ts": tc39DecoratorFixture,
++};
++
++devTest("TC39 decorators in the client HMR runtime", {
++  files: {
++    ...tc39DecoratorFiles,
++    "index.html": emptyHtmlFile({ scripts: ["index.ts"] }),
++    "index.ts": `
++      import { report } from "./decorators";
++      console.log(report());
++      import.meta.hot.accept();
++    `,
++  },
++  async test(dev) {
++    await using c = await dev.client("/");
++    await c.expectMessage("4:8:27:11:tc39:true");
++    await dev.patch("decorators.ts", { find: "value = 2", replace: "value = 3" });
++    await c.expectMessage("6:8:29:11:tc39:true");
++  },
++});
++
++devTest("TC39 decorators in the server HMR runtime", {
++  framework: minimalFramework,
++  files: {
++    ...tc39DecoratorFiles,
++    "routes/index.ts": `
++      import { report } from "../decorators";
++      export default function () {
++        return new Response(report());
++      }
++    `,
++  },
++  async test(dev) {
++    await dev.fetch("/").equals("4:8:27:11:tc39:true");
++    await dev.patch("decorators.ts", { find: "value = 2", replace: "value = 3" });
++    await dev.fetch("/").equals("6:8:29:11:tc39:true");
++  },
++});
+diff --git a/test/cli/install/termux-bin.test.ts b/test/cli/install/termux-bin.test.ts
+new file mode 100644
+index 00000000..70049499
+--- /dev/null
++++ b/test/cli/install/termux-bin.test.ts
+@@ -0,0 +1,72 @@
++import { describe, expect, test } from "bun:test";
++import { chmodSync, existsSync, lstatSync, realpathSync, statSync, symlinkSync } from "node:fs";
++import { join } from "node:path";
++import { bunEnv, bunExe, isAndroid, tempDir } from "harness";
++
++// Android app seccomp sends SIGSYS for openat2/fchmodat2. All fixtures are
++// local so the tests also run offline in a private Termux directory.
++describe.skipIf(!isAndroid)("Termux package bins", () => {
++  for (const backend of ["default", "copyfile"]) {
++    test(`installs and chmods a nested bin with ${backend}`, () => {
++      using dir = tempDir("termux-nested-bin", {
++        "bunfig.toml": '[install]\nlinker = "hoisted"\n',
++        "package.json": JSON.stringify({ workspaces: ["packages/*"] }),
++        "packages/tool/package.json": JSON.stringify({
++          name: "termux-tool",
++          version: "1.0.0",
++          bin: { "termux-tool": "bin/cli.js" },
++        }),
++        "packages/tool/bin/cli.js": '#!/usr/bin/env node\nconsole.log("termux-bin-ok");\n',
++      });
++      const root = String(dir);
++      const target = join(root, "packages/tool/bin/cli.js");
++      chmodSync(target, 0o600);
++      const result = Bun.spawnSync({
++        cmd: [bunExe(), "install", "--ignore-scripts", ...(backend === "copyfile" ? ["--backend=copyfile"] : [])],
++        cwd: root,
++        env: bunEnv,
++        stdout: "pipe",
++        stderr: "pipe",
++        timeout: 15000,
++      });
++      expect(result.exitCode).toBe(0);
++      const link = join(root, "node_modules/.bin/termux-tool");
++      expect(lstatSync(link).isSymbolicLink()).toBe(true);
++      expect(realpathSync(link)).toBe(realpathSync(target));
++      expect(statSync(target).mode & 0o100).toBe(0o100);
++    });
++  }
++
++  for (const parentSymlink of [false, true]) {
++    test(`preserves bin symlink protection (${parentSymlink ? "parent" : "final"})`, () => {
++      using dir = tempDir("termux-bin-containment", {
++        "bunfig.toml": '[install]\nlinker = "hoisted"\n',
++        "package.json": JSON.stringify({ workspaces: ["packages/*"] }),
++        "packages/tool/package.json": JSON.stringify({
++          name: "termux-tool",
++          version: "1.0.0",
++          bin: { "termux-tool": parentSymlink ? "linked/victim.js" : "payload" },
++        }),
++        "outside/victim.js": "do not make me executable",
++      });
++      const root = realpathSync(String(dir));
++      const victim = join(root, "outside/victim.js");
++      chmodSync(victim, 0o600);
++      symlinkSync(
++        parentSymlink ? join(root, "outside") : victim,
++        join(root, "packages/tool", parentSymlink ? "linked" : "payload"),
++      );
++      const result = Bun.spawnSync({
++        cmd: [bunExe(), "install", "--ignore-scripts"],
++        cwd: root,
++        env: bunEnv,
++        stdout: "pipe",
++        stderr: "pipe",
++        timeout: 15000,
++      });
++      expect(result.exitCode).toBe(0);
++      expect(statSync(victim).mode & 0o777).toBe(0o600);
++      expect(existsSync(join(root, "node_modules/.bin/termux-tool"))).toBe(!parentSymlink);
++    });
++  }
++});
