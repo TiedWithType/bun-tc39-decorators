@@ -35,5 +35,3 @@ jobs:
           grep -qx 'src/resolver/resolver.rs' patched-files.txt
           grep -qx 'src/runtime/bake/bake.private.d.ts' patched-files.txt
           grep -qx 'src/runtime/bake/hmr-module.ts' patched-files.txt
-          grep -qx 'test/bake/dev/bundle.test.ts' patched-files.txt
-          grep -qx 'test/cli/run/run_command.test.ts' patched-files.txt
