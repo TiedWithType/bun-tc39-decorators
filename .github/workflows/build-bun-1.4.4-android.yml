@@ -45,6 +45,9 @@ jobs:
 
       - name: Install Android NDK r27c
         uses: android-actions/setup-android@v3
+        env:
+          ANDROID_HOME: ${{ runner.temp }}/android-sdk
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         with:
           packages: "ndk;27.2.12479018"
 
