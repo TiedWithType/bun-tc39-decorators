@@ -1,4 +1,4 @@
-name: Validate Bun 1.4.4 combined patch
+name: Validate and build Bun 1.4.4 for Termux
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
   patch-apply:
     name: Apply patch to upstream Bun 1.4.4
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout patch repository
         uses: actions/checkout@v4
@@ -35,3 +35,58 @@ jobs:
           grep -qx 'src/resolver/resolver.rs' patched-files.txt
           grep -qx 'src/runtime/bake/bake.private.d.ts' patched-files.txt
           grep -qx 'src/runtime/bake/hmr-module.ts' patched-files.txt
+
+  build-android-arm64:
+    name: Build patched Bun for Android arm64 (Termux)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - name: Checkout patch repository
+        uses: actions/checkout@v4
+      - name: Checkout upstream Bun 1.4.4
+        run: git clone --depth 1 --branch bun-v1.4.4 https://github.com/oven-sh/bun.git bun-src
+      - name: Apply combined patch
+        run: |
+          git -C bun-src apply --check "$GITHUB_WORKSPACE/patches/bun-1.4.4-termux-combined.patch"
+          git -C bun-src apply "$GITHUB_WORKSPACE/patches/bun-1.4.4-termux-combined.patch"
+          git -C bun-src diff --check
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake git golang-go libtool ninja-build pkg-config ruby-full xz-utils wget unzip perl python3
+      - name: Install LLVM 23
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh
+          sudo bash /tmp/llvm.sh 23 all
+          echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
+      - name: Install Bun bootstrap runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - name: Install Android NDK
+        run: |
+          curl -fL --retry 3 https://dl.google.com/android/repository/android-ndk-r27c-linux.zip -o /tmp/android-ndk.zip
+          unzip -q /tmp/android-ndk.zip -d "$RUNNER_TEMP"
+          echo "ANDROID_NDK_ROOT=$RUNNER_TEMP/android-ndk-r27c" >> "$GITHUB_ENV"
+      - name: Build release binary for Android arm64
+        working-directory: bun-src
+        env:
+          CC: clang-23
+          CXX: clang++-23
+        run: |
+          bun install --frozen-lockfile
+          bun run build:release --os=linux --arch=aarch64 --abi=android --android-api-level=24
+      - name: Verify binary
+        working-directory: bun-src
+        run: |
+          test -s build/release/bun
+          file build/release/bun
+          readelf -h build/release/bun
+          readelf -l build/release/bun | grep -E 'interpreter|Requesting program interpreter' || true
+      - name: Upload Android arm64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-1.4.4-termux-android-arm64
+          path: bun-src/build/release/bun
+          if-no-files-found: error
+          retention-days: 14
