@@ -1,0 +1,161 @@
+diff --git a/src/runtime/bake/bake.private.d.ts b/src/runtime/bake/bake.private.d.ts
+index 1c8649f..e8ea47d 100644
+--- a/src/runtime/bake/bake.private.d.ts
++++ b/src/runtime/bake/bake.private.d.ts
+@@ -147,6 +147,16 @@ declare module "react-dom/server.node" {
+ 
+ declare module "bun:wrap" {
+   export const __name: unique symbol;
++  export const __privateAdd: unique symbol;
++  export const __privateGet: unique symbol;
++  export const __privateIn: unique symbol;
++  export const __privateMethod: unique symbol;
++  export const __privateSet: unique symbol;
++  export const __publicField: unique symbol;
++  export const __decorateElement: unique symbol;
++  export const __decoratorMetadata: unique symbol;
++  export const __decoratorStart: unique symbol;
++  export const __runInitializers: unique symbol;
+   export const __legacyDecorateClassTS: unique symbol;
+   export const __legacyDecorateParamTS: unique symbol;
+   export const __legacyMetadataTS: unique symbol;
+diff --git a/src/runtime/bake/hmr-module.ts b/src/runtime/bake/hmr-module.ts
+index a9d29fd..9fe3ae8 100644
+--- a/src/runtime/bake/hmr-module.ts
++++ b/src/runtime/bake/hmr-module.ts
+@@ -8,12 +8,22 @@
+ // This was done to make incremental updates as isolated as possible.
+ import {
+   __callDispose,
++  __decorateElement,
++  __decoratorMetadata,
++  __decoratorStart,
+   __EARLY_RETURN_SENTINEL,
+   __legacyDecorateClassTS,
+   __legacyDecorateParamTS,
+   __legacyMetadataTS,
+   __MEMO_CACHE_SENTINEL,
+   __name,
++  __privateAdd,
++  __privateGet,
++  __privateIn,
++  __privateMethod,
++  __privateSet,
++  __publicField,
++  __runInitializers,
+   __using,
+ } from "../../runtime.bun";
+ // This import is different based on client vs server side.
+@@ -909,6 +919,16 @@ declare global {
+ // provided by this file instead of the bundler
+ registerSynthetic("bun:wrap", {
+   __name,
++  __privateAdd,
++  __privateGet,
++  __privateIn,
++  __privateMethod,
++  __privateSet,
++  __publicField,
++  __decorateElement,
++  __decoratorMetadata,
++  __decoratorStart,
++  __runInitializers,
+   __legacyDecorateClassTS,
+   __legacyDecorateParamTS,
+   __legacyMetadataTS,
+diff --git a/test/bake/dev/bundle.test.ts b/test/bake/dev/bundle.test.ts
+index 3b3f8f9..db70e70 100644
+--- a/test/bake/dev/bundle.test.ts
++++ b/test/bake/dev/bundle.test.ts
+@@ -940,3 +940,91 @@ devTest("a render() that does not return a Response is reported as that", {
+     }).toEqual({ status: 500, saysWhatIsWrong: true, referenceError: false });
+   },
+ });
++
++const tc39DecoratorFixture = `
++  function classDecorator(value, context) {
++    context.metadata.label = "tc39";
++    context.addInitializer(function () {
++      this.ready = this.seed + 1;
++    });
++  }
++  function fieldDecorator(value, context) {
++    return initialValue => initialValue * 2;
++  }
++  function methodDecorator(value, context) {
++    return function () {
++      return value.call(this) + 4;
++    };
++  }
++  function accessorDecorator(value, context) {
++    return { init: initialValue => initialValue + 3 };
++  }
++
++  @classDecorator
++  export class Example {
++    static seed = 10;
++    static ready;
++    hasHidden() {
++      return #hidden in this;
++    }
++    @fieldDecorator value = 2;
++    @accessorDecorator accessor score = 5;
++    @fieldDecorator #hidden = 3;
++    @methodDecorator #secret() {
++      this.#hidden = this.#hidden + 1;
++      return this.#hidden;
++    }
++    @methodDecorator result() {
++      return this.value + this.score + this.#secret();
++    }
++  }
++
++  export function report() {
++    const instance = new Example();
++    const metadata = Example[Symbol.metadata ?? Symbol.for("Symbol.metadata")];
++    return [instance.value, instance.score, instance.result(), Example.ready, metadata.label, instance.hasHidden()].join(":");
++  }
++`;
++
++const tc39DecoratorFiles = {
++  "tsconfig.json": JSON.stringify({
++    compilerOptions: { experimentalDecorators: false, emitDecoratorMetadata: false },
++  }),
++  "decorators.ts": tc39DecoratorFixture,
++};
++
++devTest("TC39 decorators in the client HMR runtime", {
++  files: {
++    ...tc39DecoratorFiles,
++    "index.html": emptyHtmlFile({ scripts: ["index.ts"] }),
++    "index.ts": `
++      import { report } from "./decorators";
++      console.log(report());
++      import.meta.hot.accept();
++    `,
++  },
++  async test(dev) {
++    await using c = await dev.client("/");
++    await c.expectMessage("4:8:27:11:tc39:true");
++    await dev.patch("decorators.ts", { find: "value = 2", replace: "value = 3" });
++    await c.expectMessage("6:8:29:11:tc39:true");
++  },
++});
++
++devTest("TC39 decorators in the server HMR runtime", {
++  framework: minimalFramework,
++  files: {
++    ...tc39DecoratorFiles,
++    "routes/index.ts": `
++      import { report } from "../decorators";
++      export default function () {
++        return new Response(report());
++      }
++    `,
++  },
++  async test(dev) {
++    await dev.fetch("/").equals("4:8:27:11:tc39:true");
++    await dev.patch("decorators.ts", { find: "value = 2", replace: "value = 3" });
++    await dev.fetch("/").equals("6:8:29:11:tc39:true");
++  },
++});
