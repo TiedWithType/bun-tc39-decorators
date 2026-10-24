@@ -68,7 +68,7 @@ jobs:
       - name: Apply combined Termux patch
         working-directory: bun
         run: |
-          git apply --check ../patches/bun-1.4.3-termux-combined.patch
+          git apply --check ../patches/bun-1.4.4-termux-combined.patch
           git apply ../patches/bun-1.4.4-hmr-tc39.patch
           git diff --check
 
@@ -97,7 +97,7 @@ jobs:
           {
             echo "source_tag=bun-v1.4.4"
             echo "source_commit=38afee6c84fcf48c0edb2466aa4b27d287a59c30"
-            echo "patch=bun-1.4.3-termux-combined.patch (HMR + Termux fixes)"
+            echo "patch=bun-1.4.4-termux-combined.patch (rebased combined HMR + Termux fixes)"
             echo "target=aarch64-linux-android"
             echo "android_api=28"
             echo "profile=release"
