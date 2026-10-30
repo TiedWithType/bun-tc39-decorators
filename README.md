@@ -1,23 +1,22 @@
-# Modern CSS Lab — Web Components
+# Modern CSS Lab — Expressive You
 
-Interaktywny katalog 24 nowoczesnych i eksperymentalnych funkcji CSS. Każda funkcja ma osobny Web Component w osobnym folderze, opis, przykład z kolorowaniem składni, wykrywanie obsługi przeglądarki i mikrobenchmark.
+Interaktywny katalog nowoczesnego i eksperymentalnego CSS z 24 Web Components.
 
 ## Uruchomienie
 ```sh
-bun install
 bun run dev
 ```
 Otwórz http://localhost:3000.
 
-## Architektura
-- `src/core/css-feature-element.ts` — wspólna baza, Shadow DOM, składnia i mikrobenchmark.
-- `src/core/app.component.ts` — aplikacja i filtry.
-- `src/core/features.ts` — importy i katalog.
-- `src/features/<id>/<id>.component.ts` — osobny Web Component dla każdej funkcji.
-- Aliasy: `@core/*`, `@features/*`.
+## Interfejs
+- Motyw inspirowany **Material 3 Expressive / Expressive You**: pastelowe powierzchnie, mocna typografia, duże promienie i animacje z uwzględnieniem `prefers-reduced-motion`.
+- Krój Quicksand.
+- Wyszukiwanie pełnotekstowe i filtry kategorii z licznikami.
+- CSS Anchor Positioning: interaktywny tooltip, detekcja składni i informacja o wsparciu.
+- Drag & drop do zmiany kolejności oraz przyciski dostępne na dotyku/klawiaturze.
 
-## Interpretacja
-Detekcja wykorzystuje `CSS.supports()` i odpowiednie API. Akceptacja składni nie gwarantuje pełnej zgodności. Mikrotest mierzy medianę 5 prób utworzenia 200 węzłów DOM i odczytu stylu obliczonego; **nie jest** benchmarkiem samej funkcji CSS. Dla porównań funkcji wykonuj test A/B z fallbackiem, tym samym DOM i tym samym urządzeniem.
+## Struktura i aliasy
+Każdy przykład ma osobny folder w `src/features/<id>/`. Wspólne komponenty w `src/core/`. Aliasy `@core/*` i `@features/*`.
 
-## Zakres
-`:has()`, CSS Nesting, `@layer`, Container Queries, `subgrid`, `@property`, `color-mix()`/OKLCH, `clamp()`/viewport units, `@scope`, Anchor Positioning, Scroll-driven Animations, View Transitions, Grid Lanes, `@starting-style`, discrete transitions, `sibling-index()`/`sibling-count()`, `corner-shape`, Gap Decorations, `reading-flow`, `shape()`, CSS Mixins, CSS Custom Functions, CSS Carousels, nowe funkcje matematyczne CSS.
+## Pomiar
+Mikrobenchmark kart mierzy medianę pięciu prób tworzenia 200 węzłów DOM i odczytu stylów. Nie jest to benchmark wydajności konkretnej funkcji CSS. Detekcja składni nie gwarantuje pełnej zgodności implementacji.
