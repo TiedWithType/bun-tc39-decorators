@@ -1,0 +1,55 @@
+name: Publish Bun 1.4.4 Termux release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-termux-release.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p dist
+          gh run download 41059523736 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name "bun-1.4.4-termux-aarch64" \
+            --dir dist
+          test -f dist/build/release/bun
+          test -f dist/bun-termux-aarch64.sha256
+
+      - name: Prepare release assets
+        run: |
+          cp dist/build/release/bun dist/bun-1.4.4-termux-aarch64
+          printf '%s  %s\n' \
+            "af859b178246aac981f2c4f7d0dcbc1d04598cc061586075e6c2d4935b593ec7" \
+            "bun-1.4.4-termux-aarch64" > dist/bun-1.4.4-termux-aarch64.sha256
+          echo "### SHA-256" >> "$GITHUB_STEP_SUMMARY"
+          cat dist/bun-1.4.4-termux-aarch64.sha256 >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.4.4-termux \
+            dist/bun-1.4.4-termux-aarch64 \
+            dist/bun-1.4.4-termux-aarch64.sha256 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Bun 1.4.4 — Termux ARM64" \
+            --notes "Prebuilt Bun 1.4.4 for Android ARM64 / Termux (Android API 28+).
+
+          SHA-256:
+          af859b178246aac981f2c4f7d0dcbc1d04598cc061586075e6c2d4935b593ec7
+
+          Build workflow: https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736
+
+          The binary was compiled and its ELF format and checksum were verified. It has not been runtime-tested on a physical Android device."
