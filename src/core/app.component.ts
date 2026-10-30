@@ -1,5 +1,6 @@
 import { features } from "@core/features";
 import "@features/anchor-playground/anchor-playground.component";
+import "@features/feature-playground/feature-playground.component";
 
 class CssLabApp extends HTMLElement {
  #root=this.attachShadow({mode:"open"});
