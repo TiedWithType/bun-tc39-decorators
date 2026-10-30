@@ -1,0 +1,25 @@
+{
+  "bun_version": "1.4.4",
+  "target": "android-aarch64",
+  "android_api_level": 28,
+  "source_repository": "oven-sh/bun",
+  "source_commit": "38afee6c84fcf48c0edb2466aa4b27d287a59c30",
+  "workflow_run_id": 41059523736,
+  "workflow_run_url": "https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736",
+  "workflow_conclusion": "success",
+  "artifact_name": "bun-1.4.4-termux-aarch64",
+  "artifact_id": 12980685769,
+  "artifact_expires_at": "2026-11-29T13:17:45Z",
+  "artifact_zip_sha256": "4f70c3ef2704fe58fe0b8ceaed6c5615fb365ce95c8e5962877ee32f668f22f4",
+  "binary_path_in_artifact": "build/release/bun",
+  "binary_size_bytes": 113290272,
+  "binary_sha256": "af859b178246aac981f2c4f7d0dcbc1d04598cc061586075e6c2d4935b593ec7",
+  "toolchain": {
+    "llvm": "23",
+    "android_ndk": "27.2.12479018",
+    "java": "17"
+  },
+  "binary_format": "ELF 64-bit LSB PIE, AArch64, interpreter /system/bin/linker64, Android API 28",
+  "runtime_tested_on_device": false,
+  "notes": "Build and ELF checks passed in GitHub Actions. Binary checksum was independently checked after downloading the artifact. Device runtime has not been tested."
+}
