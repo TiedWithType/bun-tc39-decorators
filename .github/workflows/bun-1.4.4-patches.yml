@@ -1,0 +1,80 @@
+name: Validate Bun 1.4.4 patch set
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "patches/**"
+      - "docs/bun-1.4.4-patches.md"
+      - ".github/workflows/bun-1.4.4-patches.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bun-1.4.4-patches-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout patch repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: patches-repo
+
+      - name: Checkout upstream Bun 1.4.4
+        uses: actions/checkout@v4
+        with:
+          repository: oven-sh/bun
+          ref: 38afee6c84fcf48c0edb2466aa4b27d287a59c30
+          path: bun-source
+          fetch-depth: 1
+
+      - name: Verify patch applies cleanly
+        working-directory: bun-source
+        run: |
+          git apply --check ../patches-repo/patches/bun-1.4.4-termux-combined.patch
+          git apply ../patches-repo/patches/bun-1.4.4-termux-combined.patch
+          git diff --check
+          git status --short
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y automake ccache cmake coreutils g++-13 gcc-13 git golang libatomic1 libicu-dev libtool ninja-build pkg-config ruby-full xz-utils wget
+          wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- 23
+          echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
+          rustup --version || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      - name: Install Bun 1.4.4
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Record patched source revision
+        working-directory: bun-source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Apply TiedWithType Bun 1.4.4 patches"
+
+      - name: Build Bun
+        working-directory: bun-source
+        run: bun run build
+
+      - name: Test TC39 decorators and HMR
+        working-directory: bun-source
+        run: bun bd test test/bake/dev/bundle.test.ts -t "TC39 decorators"
+
+      - name: Test Termux-related regressions
+        working-directory: bun-source
+        run: |
+          bun bd test test/cli/run/run_command.test.ts
+          bun bd test test/cli/install/termux-bin.test.ts
