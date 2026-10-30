@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"view-transitions", title:"View Transitions", group:"Zaawansowane", description:"Animuje przejście między stanami widoku przez API i pseudo-elementy CSS.", detect:()=>'startViewTransition' in document && CSS.supports('view-transition-name','demo'), supportNote:"Detekcja jest orientacyjna; obsługa składni nie oznacza pełnej zgodności. Sprawdź aktualną tabelę kompatybilności.", performance:"Koszt zależy od liczby przechwyconych elementów i powierzchni animacji.", code:".route-title { view-transition-name:route-title; } ::view-transition-old(route-title) { opacity:0; }" };
+export class CssViewTransitions extends CssFeatureElement { static feature=feature; }
+customElements.define("css-view-transitions", CssViewTransitions);

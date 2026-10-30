@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"custom-functions-if", title:"Nowe funkcje wartości CSS: if() / round()", group:"Nowe", description:"Funkcje matematyczne i warunkowe wartości CSS ułatwiają obliczenia bez JS.", detect:()=>CSS.supports('width','calc(round(1.2, 1) * 1px)'), supportNote:"Test składni jest orientacyjny; nowe funkcje mogą być wdrażane częściowo albo wymagać flag. Sprawdź docelową przeglądarkę.", performance:"Obliczenia wartości są zwykle tanie; unikaj wymuszania layoutu w pętli pomiarowej.", code:".box { --step:round(up, 17px, 8px); width:calc(var(--step) * 4); padding:clamp(1rem, 3vw, 2rem); }" };
+export class CssCustomFunctionsIf extends CssFeatureElement { static feature=feature; }
+customElements.define("css-custom-functions-if", CssCustomFunctionsIf);

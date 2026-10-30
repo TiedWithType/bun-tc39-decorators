@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"anchor", title:"Anchor Positioning", group:"Zaawansowane", description:"Pozycjonuje tooltip lub menu względem kotwicy CSS.", detect:()=>CSS.supports('anchor-name','--target') && CSS.supports('position-anchor','--target'), supportNote:"Detekcja jest orientacyjna; obsługa składni nie oznacza pełnej zgodności. Sprawdź aktualną tabelę kompatybilności.", performance:"Może ograniczyć ręczne pomiary pozycji w JS; przetestuj wiele kotwic i częste zmiany layoutu.", code:".trigger { anchor-name:--target; } .tooltip { position:absolute; position-anchor:--target; position-area:bottom; position-try-fallbacks:flip-block; }" };
+export class CssAnchor extends CssFeatureElement { static feature=feature; }
+customElements.define("css-anchor", CssAnchor);

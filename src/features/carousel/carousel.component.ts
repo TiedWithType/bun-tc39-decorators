@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"carousel", title:"CSS Carousels", group:"Eksperymentalne", description:"Nowe natywne mechanizmy karuzeli i markerów przewijania CSS.", detect:()=>CSS.supports('scroll-marker-group','after'), supportNote:"Test składni jest orientacyjny; nowe funkcje mogą być wdrażane częściowo albo wymagać flag. Sprawdź docelową przeglądarkę.", performance:"Natywne przewijanie może ograniczyć JS; obrazy i liczba elementów nadal wpływają na płynność.", code:".carousel { display:flex; overflow-x:auto; scroll-marker-group:after; } .card::scroll-marker { content:''; }" };
+export class CssCarousel extends CssFeatureElement { static feature=feature; }
+customElements.define("css-carousel", CssCarousel);

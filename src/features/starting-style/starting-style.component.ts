@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"starting-style", title:"@starting-style", group:"Zaawansowane", description:"Definiuje styl początkowy elementu pojawiającego się w DOM lub po display:none.", detect:()=>CSS.supports('transition-behavior','allow-discrete'), supportNote:"Detekcja jest orientacyjna; obsługa składni nie oznacza pełnej zgodności. Sprawdź aktualną tabelę kompatybilności.", performance:"Ogranicza potrzebę klas startowych w JS; test wykrywa tylko powiązaną deklarację.", code:".dialog { opacity:1; transition:opacity 180ms, display 180ms allow-discrete; } @starting-style { .dialog { opacity:0; } }" };
+export class CssStartingStyle extends CssFeatureElement { static feature=feature; }
+customElements.define("css-starting-style", CssStartingStyle);

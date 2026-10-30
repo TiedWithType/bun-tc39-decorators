@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"discrete", title:"transition-behavior: allow-discrete", group:"Zaawansowane", description:"Umożliwia przejścia wybranych właściwości dyskretnych, np. display.", detect:()=>CSS.supports('transition-behavior','allow-discrete'), supportNote:"Detekcja jest orientacyjna; obsługa składni nie oznacza pełnej zgodności. Sprawdź aktualną tabelę kompatybilności.", performance:"Nie gwarantuje szybszego renderowania; umożliwia płynne zmiany stanów.", code:".panel { transition:opacity 200ms, display 200ms allow-discrete; } .panel[hidden] { display:none; opacity:0; }" };
+export class CssDiscrete extends CssFeatureElement { static feature=feature; }
+customElements.define("css-discrete", CssDiscrete);

@@ -1,58 +1,23 @@
-# Bun TC39 Decorators — diagnostyka
+# Modern CSS Lab — Web Components
 
-Projekt demonstracyjny sprawdzający standardowe dekoratory TC39 w Bun. Dekorator `@DEBUG` kontroluje argumenty `value` i `context` dla klasy, metody, pola oraz auto-accessora. Wyniki są widoczne na stronie i w konsoli.
-
-## Wymagania
-
-- Bun **1.4.4** lub kompatybilna binarka z obsługą używanych dekoratorów i HMR.
-- Node nie jest wymagany do uruchamiania serwera.
-- Port domyślny: `3000`.
+Interaktywny katalog 24 nowoczesnych i eksperymentalnych funkcji CSS. Każda funkcja ma osobny Web Component w osobnym folderze, opis, przykład z kolorowaniem składni, wykrywanie obsługi przeglądarki i mikrobenchmark.
 
 ## Uruchomienie
-
 ```sh
 bun install
 bun run dev
 ```
+Otwórz http://localhost:3000.
 
-Otwórz http://localhost:3000. Serwer działa z obserwowaniem plików, a zmiany w kodzie mogą być przeładowywane przez HMR.
+## Architektura
+- `src/core/css-feature-element.ts` — wspólna baza, Shadow DOM, składnia i mikrobenchmark.
+- `src/core/app.component.ts` — aplikacja i filtry.
+- `src/core/features.ts` — importy i katalog.
+- `src/features/<id>/<id>.component.ts` — osobny Web Component dla każdej funkcji.
+- Aliasy: `@core/*`, `@features/*`.
 
-Aby użyć własnej binarki Bun, uruchom ją bezpośrednio:
+## Interpretacja
+Detekcja wykorzystuje `CSS.supports()` i odpowiednie API. Akceptacja składni nie gwarantuje pełnej zgodności. Mikrotest mierzy medianę 5 prób utworzenia 200 węzłów DOM i odczytu stylu obliczonego; **nie jest** benchmarkiem samej funkcji CSS. Dla porównań funkcji wykonuj test A/B z fallbackiem, tym samym DOM i tym samym urządzeniem.
 
-```sh
-bun-tc39 --watch server.ts
-```
-
-Port można zmienić zmienną środowiskową:
-
-```sh
-PORT=3001 bun run dev
-```
-
-## Termux — Android ARM64
-
-Dostępna jest przygotowana binarka dla Androida ARM64 / AArch64, API 28+. Instrukcja zawiera sumę SHA-256, sposób instalacji oraz ograniczenia weryfikacji:
-
-- [Gotowa binarka Bun dla Termuksa](docs/bun-1.4.4-termux-binary.md)
-- [Wyniki kontroli binarki](verification/termux-binary-1.4.4/results.md)
-- [Metadane buildu](verification/termux-binary-1.4.4/build-info.json)
-
-Binarka została skompilowana i sprawdzona statycznie. Nie potwierdzono jeszcze jej działania na rzeczywistym urządzeniu Android. Artefakt GitHub Actions jest tymczasowy i może wygasnąć.
-
-## Co sprawdza przykład
-
-- poprawność podstawowych właściwości obiektu `context`;
-- rodzaj elementu: `class`, `method`, `field`, `accessor`;
-- zachowanie instancji po zastosowaniu dekoratorów;
-- wyświetlenie raportu i obsługę błędów runtime.
-
-To projekt diagnostyczny, a nie pełny zestaw testów zgodności ze specyfikacją TC39.
-
-## Struktura
-
-- `src/debug.ts` — dekorator i walidacja argumentów.
-- `src/main.ts` — przykładowa klasa i sprawdzenia runtime.
-- `index.html` — interfejs raportu.
-- `server.ts` — serwer Bun z HMR.
-- `tools/` — pomocnicze skrypty diagnostyczne.
-- `verification/termux-binary-1.4.4/` — raport i metadane binarki Android ARM64.
+## Zakres
+`:has()`, CSS Nesting, `@layer`, Container Queries, `subgrid`, `@property`, `color-mix()`/OKLCH, `clamp()`/viewport units, `@scope`, Anchor Positioning, Scroll-driven Animations, View Transitions, Grid Lanes, `@starting-style`, discrete transitions, `sibling-index()`/`sibling-count()`, `corner-shape`, Gap Decorations, `reading-flow`, `shape()`, CSS Mixins, CSS Custom Functions, CSS Carousels, nowe funkcje matematyczne CSS.

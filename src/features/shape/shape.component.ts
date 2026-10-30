@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"shape", title:"shape() dla clip-path", group:"Nowe", description:"Opisuje responsywny kształt przez shape() używany w clip-path.", detect:()=>CSS.supports('clip-path','shape(from 0 0, line to 100% 0, line to 100% 100%, close)'), supportNote:"Test składni jest orientacyjny; nowe funkcje mogą być wdrażane częściowo albo wymagać flag. Sprawdź docelową przeglądarkę.", performance:"Złożone clipping paths mogą zwiększać koszt malowania; sprawdź animacje i liczbę elementów.", code:".cutout { clip-path:shape(from 0 0, line to 100% 0, line to 88% 100%, line to 0 100%, close); }" };
+export class CssShape extends CssFeatureElement { static feature=feature; }
+customElements.define("css-shape", CssShape);

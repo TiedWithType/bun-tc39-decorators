@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"scroll-animations", title:"Scroll-driven Animations", group:"Zaawansowane", description:"Powiązuje animację z postępem przewijania lub widocznością elementu.", detect:()=>CSS.supports('animation-timeline','scroll()') && CSS.supports('animation-timeline','view()'), supportNote:"Detekcja jest orientacyjna; obsługa składni nie oznacza pełnej zgodności. Sprawdź aktualną tabelę kompatybilności.", performance:"Transform i opacity zwykle są tańsze niż zmiany layoutu; sprawdź compositing.", code:".progress { animation:grow linear both; animation-timeline:scroll(root block); } @keyframes grow { from { transform:scaleX(0); } to { transform:scaleX(1); } }" };
+export class CssScrollAnimations extends CssFeatureElement { static feature=feature; }
+customElements.define("css-scroll-animations", CssScrollAnimations);

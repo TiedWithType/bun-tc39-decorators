@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"css-mixins", title:"CSS Mixins: @mixin / @apply", group:"Eksperymentalne", description:"Proponowana składnia wielokrotnego użycia bloków deklaracji CSS z parametrami.", detect:()=>false, supportNote:"Test składni jest orientacyjny; nowe funkcje mogą być wdrażane częściowo albo wymagać flag. Sprawdź docelową przeglądarkę.", performance:"Brak natywnego wsparcia w przeglądarkach według aktualnej dokumentacji; preprocesor to inny przypadek.", code:"@mixin --surface(--tone: rebeccapurple) { color:white; background:var(--tone); } .card { @apply --surface( purple ); }" };
+export class CssCssMixins extends CssFeatureElement { static feature=feature; }
+customElements.define("css-css-mixins", CssCssMixins);

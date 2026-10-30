@@ -1,0 +1,4 @@
+import { CssFeatureElement, type CssFeature } from "@core/css-feature-element";
+const feature: CssFeature = { id:"clamp-viewport", title:"clamp() + dvh/svh/lvh", group:"Stabilne", description:"Płynna skala wymiarów i jednostki viewportu przydatne na urządzeniach mobilnych.", detect:()=>CSS.supports('height','100dvh') && CSS.supports('font-size','clamp(1rem, 2vw, 2rem)'), supportNote:"Wykrycie akceptacji składni nie gwarantuje pełnej implementacji. Sprawdź tabelę kompatybilności docelowej przeglądarki.", performance:"Częste zmiany viewportu mogą wywołać layout; same funkcje są zwykle tanie.", code:".app { min-height:100svh; padding:clamp(1rem, 3vw, 3rem); height:100dvh; }" };
+export class CssClampViewport extends CssFeatureElement { static feature=feature; }
+customElements.define("css-clamp-viewport", CssClampViewport);
