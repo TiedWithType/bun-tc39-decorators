@@ -38,7 +38,8 @@ class CssLabApp extends HTMLElement {
    <nav class="filters" aria-label="Filtr kategorii"><button class="filter" data-filter="Wszystkie" aria-pressed="true">Wszystkie <small></small></button>${["Stabilne","Nowe","Zaawansowane","Eksperymentalne"].map(g=>`<button class="filter" data-filter="${g}" aria-pressed="false">${g} <small></small></button>`).join("")}</nav>
    <section class="grid" aria-label="Katalog funkcji CSS">${features.map(f=>`<css-${f.id} data-group="${f.group}" data-search="${this.#esc([f.title,f.group,f.description,f.code].join(" "))}"></css-${f.id}>`).join("")}</section>
    <p class="empty" hidden>Nie znaleziono funkcji. Zmień wyszukiwaną frazę lub kategorię.</p>
-   <section class="section-title"><div><h2>Pracownia interaktywna</h2><p>Przetestuj CSS Anchor Positioning oraz przeciąganie elementów.</p></div></section>
+   <section class="section-title"><div><h2>Pracownia interaktywna</h2><p>Wybierz dowolną funkcję z katalogu, edytuj HTML i CSS oraz testuj efekt w odizolowanym podglądzie. Dodatkowo sprawdź Anchor Positioning i drag & drop.</p></div></section>
+   <feature-playground></feature-playground>
    <anchor-playground></anchor-playground>
    <footer>Dokumentacja: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noreferrer">MDN CSS</a> · Czcionka: Quicksand · Funkcje eksperymentalne mogą wymagać flag lub nie być obsługiwane.</footer>
   </main>`;
