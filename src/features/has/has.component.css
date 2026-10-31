@@ -1,0 +1,1 @@
+.card:has(input:checked) { border-color: oklch(70% 0.18 145); background: color-mix(in oklab, white 92%, green); }

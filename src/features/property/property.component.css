@@ -1,0 +1,1 @@
+@property --progress { syntax:'<percentage>'; inherits:false; initial-value:0%; } .bar { width:var(--progress); }
