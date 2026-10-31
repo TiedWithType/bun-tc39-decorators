@@ -7,6 +7,6 @@ const feature: CssFeature = {
  description:"Pozycjonuj tooltipy i menu względem kotwicy bez ręcznego mierzenia współrzędnych w JavaScript.",
  detect:()=>false, supportNote:"Sprawdzane są trzy deklaracje CSS Anchor Positioning. Wsparcie zależy od wersji przeglądarki; użyj panelu poniżej, aby sprawdzić zachowanie w praktyce.",
  performance:"Może ograniczyć JS obliczający pozycje. Nadal sprawdzaj layout przy zmianie rozmiaru, przewijaniu i wielu kotwicach.", code:styles };
-@Component({ selector: "css-anchor", template, styles })
-@Supports(() => CSS.supports("anchor-name","--target") && CSS.supports("position-anchor","--target") && CSS.supports("position-area","bottom"))
+@Component({ selector: "css-anchor", template, styles, feature })
+@Supports(() => CSS.supports("anchor-name","--target") && CSS.supports("position-anchor","--target") && CSS.supports("position-area","bottom"), feature)
 export class CssAnchor extends CssFeatureElement { static feature=feature; }
