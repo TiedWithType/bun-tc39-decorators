@@ -30,14 +30,14 @@ class CssLabApp extends HTMLElement {
     <h1>Nowoczesny CSS,<br>który możesz dotknąć.</h1>
     <p>Przeglądaj nowoczesne i eksperymentalne funkcje CSS. Sprawdzaj przykłady, wsparcie przeglądarki i uruchamiaj mikrotesty — w ekspresyjnym, pastelowym motywie inspirowanym Material 3 Expressive.</p>
     <p><strong>Ważne:</strong> wykrycie składni nie gwarantuje pełnej implementacji. Wynik mikrotestu zależy od urządzenia i nie jest rankingiem funkcji CSS.</p>
-    <div class="pills"><span class="pill">${features.length} komponentów CSS</span><span class="pill">Shadow DOM</span><span class="pill">Quicksand</span><span class="pill">@core/* · @features/*</span></div>
+    <div class="pills"><span class="pill">${features.length} komponentów CSS</span><span class="pill">Shadow DOM</span><span class="pill">@Component · @Supports</span><span class="pill">Quicksand</span><span class="pill">@core/* · @features/*</span></div>
    </section>
    <section class="section-title"><div><h2>Eksploruj funkcje</h2><p>Filtruj po kategorii albo wpisz nazwę, właściwość lub opis.</p></div></section>
    <div class="tools"><label class="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Np. anchor, grid, animacje…" aria-label="Szukaj funkcji CSS"></label><div class="count" aria-live="polite"></div></div>
    <nav class="filters" aria-label="Filtr kategorii"><button class="filter" data-filter="Wszystkie" aria-pressed="true">Wszystkie <small></small></button>${["Stabilne","Nowe","Zaawansowane","Eksperymentalne"].map(g=>`<button class="filter" data-filter="${g}" aria-pressed="false">${g} <small></small></button>`).join("")}</nav>
    <section class="grid" aria-label="Katalog funkcji CSS">${features.map(f=>`<css-${f.id} data-group="${f.group}" data-search="${this.#esc([f.title,f.group,f.description,f.code].join(" "))}"></css-${f.id}>`).join("")}</section>
    <p class="empty" hidden>Nie znaleziono funkcji. Zmień wyszukiwaną frazę lub kategorię.</p>
-   <section class="section-title"><div><h2>Pracownia interaktywna</h2><p>Każda karta ma przypisany do swojej funkcji stały przykład HTML i podgląd CSS. Anchor Positioning oraz drag & drop sprawdzisz w osobnej demonstracji.</p></div></section>
+   <section class="section-title"><div><h2>Pracownia interaktywna</h2><p>Każda funkcja jest modułem z osobnymi plikami HTML, CSS i TypeScript. Dekoratory TC39 @Component oraz @Supports rejestrują komponent i sprawdzają obsługę składni. Anchor Positioning oraz drag & drop sprawdzisz w osobnej demonstracji.</p></div></section>
    <anchor-playground></anchor-playground>
    <footer>Dokumentacja: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noreferrer">MDN CSS</a> · Czcionka: Quicksand · Funkcje eksperymentalne mogą wymagać flag lub nie być obsługiwane.</footer>
   </main>`;
