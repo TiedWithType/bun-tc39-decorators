@@ -22,13 +22,14 @@ export abstract class CssFeatureElement extends HTMLElement {
   .actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:auto;padding:16px 19px 19px}
   button{font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;background:#e8ddff;border:1px solid #d4c2fa;border-radius:14px;padding:10px 13px;color:#49336f;transition:transform .16s ease,background .16s ease}
   button:hover{transform:translateY(-1px);background:#ded0ff}button:focus-visible{outline:3px solid #8b6de0;outline-offset:3px}
-  .example{margin:0 19px;border:1px solid #e2d9ef;border-radius:16px;overflow:hidden;background:white}.example iframe{display:block;width:100%;height:230px;border:0;background:white}.html-code{max-height:150px;overflow:auto;font-size:.72rem}.html-code code{white-space:pre-wrap;overflow-wrap:anywhere}\n  output{font-size:.76rem;font-weight:700;color:#5d438e;max-width:100%;overflow-wrap:anywhere}
+  .example{margin:0 19px;border:1px solid #e2d9ef;border-radius:16px;overflow:hidden;background:white}.example iframe{display:block;width:100%;height:230px;border:0;background:white}.html-code{max-height:150px;overflow:auto;font-size:.72rem}.html-code code{white-space:pre-wrap;overflow-wrap:anywhere}
+  output{font-size:.76rem;font-weight:700;color:#5d438e;max-width:100%;overflow-wrap:anywhere}
   @media(max-width:440px){.example{margin-inline:15px}header{padding:16px 15px 7px;gap:8px}.group{max-width:42%;font-size:.66rem}p{margin-inline:15px}pre{margin-inline:15px;font-size:.73rem}.status{margin-inline:15px}.actions{padding:14px 15px 16px}}
   @media(prefers-reduced-motion:reduce){article,button{transition:none!important}}
   </style><article><header><h2>${this.#esc(f.title)}</h2><span class="group">${this.#esc(f.group)}</span></header>
   <p>${this.#esc(f.description)}</p><div class="status" role="status">${ok?'✓ Wykryto obsługę testowanej składni':'! Brak potwierdzenia obsługi składni'}</div>
   <p>${this.#esc(f.supportNote)}</p><h3>Przykładowy CSS</h3><pre><code>${this.#highlight(f.code)}</code></pre>
-  <h3>Przykład przypisany do funkcji</h3><div class="example"><iframe title="Podgląd przykładu CSS" sandbox=""></iframe></div><h3>HTML przykładu</h3><pre class="html-code"><code></code></pre>
+  <h3>Przykład przypisany do funkcji</h3><div class="example"><iframe title="Podgląd przykładu CSS" sandbox="allow-scripts"></iframe></div><h3>HTML przykładu</h3><pre class="html-code"><code></code></pre>
   <h3>Wydajność</h3><p>${this.#esc(f.performance)}</p><p>Mikrotest mierzy ogólną operację DOM/CSS, nie szybkość tej konkretnej funkcji.</p>
   <div class="actions"><button class="bench" type="button">Uruchom mikrotest</button><output>Brak pomiaru</output></div></article>`;
   const sample=this.#example(f.id); const frame=this.#root.querySelector<HTMLIFrameElement>('iframe'); if(frame)frame.srcdoc=this.#preview(sample.html,f.code); const htmlCode=this.#root.querySelector('.html-code code'); if(htmlCode)htmlCode.textContent=sample.html;
