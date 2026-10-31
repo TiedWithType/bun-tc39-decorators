@@ -1,0 +1,1 @@
+.item { width:calc(3rem + sibling-index() * 1rem); animation-delay:calc(sibling-index() * 40ms); }

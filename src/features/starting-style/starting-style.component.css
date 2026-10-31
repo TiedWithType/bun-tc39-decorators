@@ -1,0 +1,1 @@
+.dialog { opacity:1; transition:opacity 180ms, display 180ms allow-discrete; } @starting-style { .dialog { opacity:0; } }
