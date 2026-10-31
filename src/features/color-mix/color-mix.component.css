@@ -1,0 +1,1 @@
+.badge { --tone:oklch(65% 0.2 300); background:color-mix(in oklch, var(--tone), white 20%); color:oklch(30% 0.08 300); }

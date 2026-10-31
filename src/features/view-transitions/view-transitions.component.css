@@ -1,0 +1,1 @@
+.route-title { view-transition-name:route-title; } ::view-transition-old(route-title) { opacity:0; }

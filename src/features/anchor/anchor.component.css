@@ -1,0 +1,8 @@
+.anchor { anchor-name: --target; }
+.tooltip {
+  position: absolute;
+  position-anchor: --target;
+  position-area: bottom;
+  margin-block-start: .5rem;
+  position-try-fallbacks: flip-block;
+}
