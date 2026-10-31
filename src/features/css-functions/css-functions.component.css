@@ -1,0 +1,1 @@
+@function --double(--value <length>) { result:calc(var(--value) * 2); } .box { width:--double(var(--demo-length, 6rem)); }

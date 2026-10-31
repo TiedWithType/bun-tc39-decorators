@@ -1,0 +1,1 @@
+@supports (width:calc(round(up, 17px, 8px) * 4)) { .box { --step:round(up, var(--input-size, 17px), 8px); width:calc(var(--step) * 4); } } .box { padding:clamp(1rem, 3vw, 2rem); }
