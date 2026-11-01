@@ -1,5 +1,4 @@
 name: Deploy GitHub Pages
-# Retry deployment: trigger a fresh build on push to main.
 
 on:
   push:
@@ -10,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
   group: github-pages
@@ -42,6 +42,35 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Clear stale Pages deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const staleRef = "0fc08ce0323f2231687df73386effba284b8c1e4";
+            const { data: deployments } = await github.rest.repos.listDeployments({
+              owner, repo, ref: staleRef, environment: "github-pages", per_page: 100
+            });
+
+            for (const deployment of deployments) {
+              const { data: statuses } = await github.rest.repos.listDeploymentStatuses({
+                owner, repo, deployment_id: deployment.id, per_page: 10
+              });
+              const latest = statuses[0];
+
+              if (latest?.state === "in_progress") {
+                await github.rest.repos.createDeploymentStatus({
+                  owner, repo, deployment_id: deployment.id, state: "inactive",
+                  description: "Closing stale GitHub Pages deployment before retry."
+                });
+                await github.rest.repos.deleteDeployment({
+                  owner, repo, deployment_id: deployment.id
+                });
+                core.info(`Removed stale Pages deployment ${deployment.id}.`);
+              }
+            }
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
