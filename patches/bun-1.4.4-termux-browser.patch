@@ -1,0 +1,27 @@
+diff --git a/src/js/internal/serve_cli.ts b/src/js/internal/serve_cli.ts
+--- a/src/js/internal/serve_cli.ts
++++ b/src/js/internal/serve_cli.ts
+@@ -239,16 +239,21 @@
+           const opener =
+             process.platform === "darwin"
+               ? ["open", url]
+               : process.platform === "win32"
+                 ? // `start` is a command of cmd.exe, not a program. Its first quoted argument is the window title.
+                   ["cmd", "/c", "start", "", url]
+                 : process.platform === "android"
+-                  ? ["/system/bin/am", "start", "-a", "android.intent.action.VIEW", "-d", url]
++                  ? [Bun.which("termux-open-url") ?? Bun.which("xdg-open") ?? "xdg-open", url]
+                   : ["xdg-open", url];
+           try {
+-            Bun.spawn(opener).exited.catch(() => {});
++            Bun.spawn(opener).exited.then(
++              exitCode => {
++                if (exitCode !== 0) console.log("Could not open a browser. Open " + url);
++              },
++              () => console.log("Could not open a browser. Open " + url),
++            );
+           } catch {
+             // `Bun.spawn` throws when the opener is not installed. The URL is in the banner.
+             console.log(`Could not open a browser. Open ${url}`);
+           }
+           break;

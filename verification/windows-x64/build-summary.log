@@ -1,0 +1,16 @@
+Source: daf9b8beba027bc8d04be41f86766ca4f8c91d31
+Profile: windows-x64-release; baseline=on; canary=off
+Initial link: killed by the 8 GiB memory limit.
+Retry flags: /opt:lldltojobs=1 /threads:1; ninja -j1
+Final build exit code: 0
+
+[1/4] link bun-profile.exe
+[2/4] copy bun.exe (windows: no strip)
+[3/4] check bun-profile exports, dynamic deps, initializers, hardening
+[check] bun-profile 736 exported symbols (33ms)
+[check] bun-profile 15 shared libraries (17ms)
+[check] bun-profile 429 imported symbols (0ms)
+[check] bun-profile 5 hardening properties (16ms)
+[4/4] check bun-profile link inputs for duplicate definitions
+[check] bun-profile 0 duplicate strong symbols (3.0s)
+MSVC CRT PDB warnings (LNK4099): 121

@@ -1,1 +1,0 @@
-.panel { transition:opacity 200ms, display 200ms allow-discrete; } .panel.is-hidden { display:none; opacity:0; }

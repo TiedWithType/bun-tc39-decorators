@@ -1,0 +1,7 @@
+Device before fix: Android arm64, Bun 1.4.3+f5d709368
+Default and copyfile installations both exit 159.
+18540 --- SIGSYS {si_signo=SIGSYS, si_code=SYS_SECCOMP, si_call_addr=0x6fcb4f1ba4, si_syscall=__NR_openat2, si_arch=AUDIT_ARCH_AARCH64} ---
+18540 --- SIGSYS {si_signo=SIGSYS, si_code=SYS_SECCOMP, si_call_addr=0x6fcb4f1ba4, si_syscall=__NR_openat2, si_arch=AUDIT_ARCH_AARCH64} ---
+18561 --- SIGSYS {si_signo=SIGSYS, si_code=SYS_SECCOMP, si_call_addr=0x767d131ba4, si_syscall=__NR_openat2, si_arch=AUDIT_ARCH_AARCH64} ---
+18561 --- SIGSYS {si_signo=SIGSYS, si_code=SYS_SECCOMP, si_call_addr=0x767d131ba4, si_syscall=__NR_openat2, si_arch=AUDIT_ARCH_AARCH64} ---
+Post-fix device execution: pending.

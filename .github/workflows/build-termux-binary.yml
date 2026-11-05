@@ -1,0 +1,116 @@
+name: Build Bun 1.4.4 for Termux (Android ARM64)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "patches/**"
+      - ".github/workflows/build-termux-binary.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: termux-binary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-android-arm64:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - name: Checkout patch repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: patches-repo
+
+      - name: Checkout Bun 1.4.4 source
+        uses: actions/checkout@v4
+        with:
+          repository: oven-sh/bun
+          ref: 38afee6c84fcf48c0edb2466aa4b27d287a59c30
+          path: bun-source
+          fetch-depth: 1
+
+      - name: Apply Termux patches
+        working-directory: bun-source
+        run: |
+          git apply --check ../patches-repo/patches/bun-1.4.4-termux-combined.patch
+          git apply ../patches-repo/patches/bun-1.4.4-termux-combined.patch
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Apply TiedWithType Bun 1.4.4 Termux patches"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y automake ccache cmake coreutils g++-13 gcc-13 git golang libatomic1 libicu-dev libiconv-hook1 libtool nasm ninja-build pkg-config ruby-full xz-utils wget
+          wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- 23
+          echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
+          rustup --version || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: ""
+
+      - name: Install Android NDK r27c
+        run: |
+          sdkmanager "ndk;27.2.12479018"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Configure Android compiler runtime for LLVM 23
+        run: |
+          set -euo pipefail
+          NDK_CLANG_BUILTINS="$(find "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/lib/clang" -type f -name 'libclang_rt.builtins-aarch64-android.a' -print -quit)"
+          test -n "$NDK_CLANG_BUILTINS" || {
+            echo "::error::Android NDK builtins runtime archive was not found"
+            find "$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/lib/clang" -type f -name '*builtins*aarch64*' -print
+            exit 1
+          }
+          LLVM_RESOURCE_DIR="$(/usr/lib/llvm-23/bin/clang --print-resource-dir)"
+          TARGET_RUNTIME_DIR="$LLVM_RESOURCE_DIR/lib/aarch64-unknown-linux-android28"
+          sudo mkdir -p "$TARGET_RUNTIME_DIR"
+          sudo ln -sf "$NDK_CLANG_BUILTINS" "$TARGET_RUNTIME_DIR/libclang_rt.builtins.a"
+          ls -l "$TARGET_RUNTIME_DIR/libclang_rt.builtins.a"
+
+      - name: Install Bun bootstrap runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Build Android ARM64 binary
+        working-directory: bun-source
+        run: |
+          bun scripts/build.ts --profile=release --os=linux --arch=aarch64 --abi=android
+
+      - name: Verify output binary
+        working-directory: bun-source
+        run: |
+          test -x build/release/bun
+          file build/release/bun
+          readelf -l build/release/bun | grep -E 'interpreter.*linker64'
+          build/release/bun --version || true
+          sha256sum build/release/bun > bun-termux-aarch64.sha256
+
+      - name: Upload Termux binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: bun-1.4.4-termux-aarch64
+          path: |
+            bun-source/build/release/bun
+            bun-source/bun-termux-aarch64.sha256
+          if-no-files-found: error
+          retention-days: 30

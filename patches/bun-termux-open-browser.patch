@@ -1,0 +1,32 @@
+diff --git a/src/js/internal/html.ts b/src/js/internal/html.ts
+index 5c1245290c..8d0d65490f 100644
+--- a/src/js/internal/html.ts
++++ b/src/js/internal/html.ts
+@@ -388,9 +388,24 @@ yourself with Bun.serve().
+           } else if (process.platform === "win32") {
+             Bun.spawn(["start", url]).exited.catch(() => {});
+           } else if (process.platform === "android") {
+-            Bun.spawn(["/system/bin/am", "start", "-a", "android.intent.action.VIEW", "-d", url]).exited.catch(
+-              () => {},
+-            );
++            try {
++              // /system/bin/am assumes the shell UID; Termux supplies its own opener.
++              const opener = Bun.which("termux-open-url") ?? Bun.which("xdg-open");
++              if (!opener) {
++                console.error(`Could not find termux-open-url or xdg-open. Open ${url} in your browser.`);
++                break;
++              }
++              Bun.spawn([opener, url]).exited.then(
++                exitCode => {
++                  if (exitCode !== 0) {
++                    console.error(`Could not open the browser (exit code ${exitCode}). Open ${url} in your browser.`);
++                  }
++                },
++                () => console.error(`Could not open the browser. Open ${url} in your browser.`),
++              );
++            } catch {
++              console.error(`Could not open the browser. Open ${url} in your browser.`);
++            }
+           } else {
+             Bun.spawn(["xdg-open", url]).exited.catch(() => {});
+           }

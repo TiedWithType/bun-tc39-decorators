@@ -50,6 +50,6 @@ jobs:
           SHA-256:
           af859b178246aac981f2c4f7d0dcbc1d04598cc061586075e6c2d4935b593ec7
 
-          Build workflow: https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736
+          Build workflow: https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41059523736
 
           The binary was compiled and its ELF format and checksum were verified. It has not been runtime-tested on a physical Android device."

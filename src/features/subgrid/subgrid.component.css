@@ -1,1 +1,0 @@
-.parent { display:grid; grid-template-columns:1fr 2fr; } .child { display:grid; grid-template-columns:subgrid; }

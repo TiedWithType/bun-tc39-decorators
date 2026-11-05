@@ -1,1 +1,0 @@
-.panel { container-type:inline-size; } @container (width > 16rem) { .card { grid-template-columns:8rem 1fr; } }

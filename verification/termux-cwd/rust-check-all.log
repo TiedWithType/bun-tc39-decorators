@@ -1,0 +1,16 @@
+[check] x86_64-unknown-linux-gnu
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 21s
+[skip] aarch64-unknown-linux-gnu  (rustup target add aarch64-unknown-linux-gnu)
+[skip] x86_64-unknown-linux-musl  (rustup target add x86_64-unknown-linux-musl)
+[skip] aarch64-unknown-linux-musl  (rustup target add aarch64-unknown-linux-musl)
+[skip] x86_64-linux-android  (rustup target add x86_64-linux-android)
+[check] aarch64-linux-android
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 09s
+[skip] x86_64-apple-darwin  (rustup target add x86_64-apple-darwin)
+[skip] aarch64-apple-darwin  (rustup target add aarch64-apple-darwin)
+[skip] x86_64-pc-windows-msvc  (rustup target add x86_64-pc-windows-msvc)
+[skip] aarch64-pc-windows-msvc  (rustup target add aarch64-pc-windows-msvc)
+[skip] x86_64-unknown-freebsd  (rustup target add x86_64-unknown-freebsd)
+[check] aarch64-unknown-freebsd  (-Zbuild-std=core,alloc,std,proc_macro,panic_abort)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 30s
+3 ok, 0 failed, 9 skipped (of 12)

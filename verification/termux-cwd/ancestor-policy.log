@@ -1,0 +1,45 @@
+
+running 5 tests
+test android_hidden_parent ... ok
+test other_errors ... ok
+test missing_target ... ok
+test permission_target ... ok
+test permission_parent ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test android_hidden_parent ... ok
+test missing_target ... ok
+test other_errors ... ok
+test permission_parent ... ok
+test permission_target ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test permission_parent ... ok
+test missing_target ... ok
+test other_errors ... ok
+test android_hidden_parent ... FAILED
+test permission_target ... ok
+
+failures:
+
+---- android_hidden_parent stdout ----
+
+thread 'android_hidden_parent' (108) panicked at /tmp/bun-ancestor-policy-oh64egb4/toolchains/ancestor-policy.rs:17:2:
+assertion `left == right` failed
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    android_hidden_parent
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Baseline fails Android parent ENOENT; patched condition passes both configurations.

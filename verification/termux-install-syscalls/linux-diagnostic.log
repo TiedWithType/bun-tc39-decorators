@@ -1,0 +1,98 @@
+
+=== info ===
+{
+  "bun": "1.4.2",
+  "revision": "744846f844374847c902b5e7fd59b4342a51ef99",
+  "platform": "linux",
+  "arch": "x64",
+  "execPath": "/workspace/scratch/39b820233364/test-runtime/node_modules/@oven/bun-linux-x64/bin/bun",
+  "tmpdir": "/tmp",
+  "opener": "/usr/bin/xdg-open"
+}
+PASS: info
+EXIT: 0
+
+=== tmpdir ===
+PASS: tmpdir
+EXIT: 0
+
+=== network ===
+39 |   tmpdir() {
+40 |     const dir = fs.mkdtempSync(join(os.tmpdir(), 'bun-probe-'));
+41 |     fs.rmdirSync(dir);
+42 |   },
+43 |   network() {
+44 |     const names = Object.keys(os.networkInterfaces());
+                                      ^
+error: A system error occurred: getifaddrs returned an error
+ syscall: "getifaddrs",
+   errno: 1,
+    code: "ERR_SYSTEM_ERROR"
+
+      at network (/workspace/scratch/39b820233364/bun-tc39-decorators/tools/termux-runtime-probe.mjs:44:34)
+      at /workspace/scratch/39b820233364/bun-tc39-decorators/tools/termux-runtime-probe.mjs:96:13
+
+Bun v1.4.2 (Linux x64)
+EXIT: 1
+
+=== shell ===
+PASS: shell
+EXIT: 0
+
+=== spawn ===
+PASS: spawn
+EXIT: 0
+
+=== http ===
+PASS: http
+EXIT: 0
+
+=== watch ===
+PASS: watch
+EXIT: 0
+
+=== bun run --bun: wymuszenie właściwego runtime ===
+$ node probe.mjs forcedNode
+forced-node-ok
+PASS: forcedNode
+EXIT: 0
+
+=== lokalny bun install: default ===
+bun install v1.4.2 (744846f84)
+Resolving dependencies
+Resolved, downloaded and extracted [1]
+Saved lockfile
+
++ bun-termux-probe-bin@../probe.tgz
+
+1 package installed [1.00ms]
+EXIT: 0
+
+=== kontrola .bin: default ===
+PASS: installResult
+EXIT: 0
+
+=== lokalny bun install: copyfile ===
+bun install v1.4.2 (744846f84)
+Resolving dependencies
+Resolved, downloaded and extracted [1]
+Saved lockfile
+
++ bun-termux-probe-bin@../probe.tgz
+
+1 package installed [1.00ms]
+EXIT: 0
+
+=== kontrola .bin: copyfile ===
+PASS: installResult
+EXIT: 0
+
+=== symlinkFinal ===
+PASS: symlinkFinal
+EXIT: 0
+
+=== symlinkParent ===
+PASS: symlinkParent
+EXIT: 0
+
+Zakończono. Nieudane testy: 1. EXIT 159 zwykle oznacza SIGSYS.

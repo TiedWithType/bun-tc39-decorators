@@ -1,1 +1,0 @@
-.carousel { display:flex; overflow-x:auto; scroll-marker-group:after; } .card::scroll-marker { content:''; }
