@@ -79,7 +79,7 @@ git clone https://github.com/oven-sh/bun.git bun-source
 cd bun-source
 git checkout 38afee6c84fcf48c0edb2466aa4b27d287a59c30
 
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-runtime-patches/main/patches/bun-1.4.4-tc39-hmr.patch -o ../bun-1.4.4-tc39-hmr.patch
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.4-tc39-hmr.patch -o ../bun-1.4.4-tc39-hmr.patch
 git apply --check ../bun-1.4.4-tc39-hmr.patch
 git apply ../bun-1.4.4-tc39-hmr.patch
 git diff --check
@@ -94,7 +94,7 @@ git clone https://github.com/oven-sh/bun.git bun-source
 cd bun-source
 git checkout 38afee6c84fcf48c0edb2466aa4b27d287a59c30
 
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-runtime-patches/main/patches/bun-1.4.4-termux-combined.patch -o ../bun-1.4.4-termux-combined.patch
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.4-termux-combined.patch -o ../bun-1.4.4-termux-combined.patch
 git apply --check ../bun-1.4.4-termux-combined.patch
 git apply ../bun-1.4.4-termux-combined.patch
 git diff --check
@@ -115,8 +115,8 @@ Testy zależne od Androida pomijają się na innych platformach. Test CWD wymaga
 ## Stan weryfikacji
 
 Stan na 30 października 2026:
-- [Walidacja patchy — zakończona sukcesem](https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41064304099): patch zbiorczy zastosowano do przypiętej bazy Bun 1.4.4, a build i testy workflow zakończyły się powodzeniem.
-- [Build Termux ARM64 — zakończony sukcesem](https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41059523736): wykonano release cross-build oraz kontrolę formatu ELF i interpretera Androida.
+- [Walidacja patchy — zakończona sukcesem](https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41064304099): patch zbiorczy zastosowano do przypiętej bazy Bun 1.4.4, a build i testy workflow zakończyły się powodzeniem.
+- [Build Termux ARM64 — zakończony sukcesem](https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736): wykonano release cross-build oraz kontrolę formatu ELF i interpretera Androida.
 
 Build cross-kompilowany nie potwierdza jeszcze działania binarki na rzeczywistym telefonie. Testy runtime/HMR na Androidzie pozostają oddzielnym sprawdzeniem.
 
