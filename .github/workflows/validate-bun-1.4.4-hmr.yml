@@ -43,7 +43,9 @@ jobs:
           git diff --check
           git diff --name-only | sort > changed-files.txt
           cat changed-files.txt
-          diff -u <(printf '%s\\n' \\
-            'src/runtime/bake/bake.private.d.ts' \\
-            'src/runtime/bake/hmr-module.ts' \\
-            'test/bake/dev/bundle.test.ts') changed-files.txt
+          cat > expected-files.txt <<'EOF'
+          src/runtime/bake/bake.private.d.ts
+          src/runtime/bake/hmr-module.ts
+          test/bake/dev/bundle.test.ts
+          EOF
+          diff -u expected-files.txt changed-files.txt
