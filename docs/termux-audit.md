@@ -1,6 +1,6 @@
 # Audyt Termux — 7 października 2026
 
-Repo: `TiedWithType/bun-runtime-patches`, HEAD `ff6be4d`.
+Repo: `TiedWithType/bun-tc39-decorators`, HEAD `ff6be4d`.
 Sprawdzono źródła Bun na bazie `bc7a813b10b6ef8accc00c931b9a501331ac8c5c`
 z nałożonym `bun-1.4.3-termux-combined.patch`.
 Nie uruchomiono binarki Androida na telefonie. Ustalenia z kodu nie są

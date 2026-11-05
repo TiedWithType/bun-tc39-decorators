@@ -55,7 +55,7 @@ W checkoutcie **źródeł Bun**, nie projektu z dekoratorami:
 
 ```sh
 git checkout bc7a813b10b6ef8accc00c931b9a501331ac8c5c
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-runtime-patches/main/patches/bun-termux-cwd.patch -o bun-termux-cwd.patch
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-termux-cwd.patch -o bun-termux-cwd.patch
 git apply --check bun-termux-cwd.patch
 git apply bun-termux-cwd.patch
 ```
@@ -63,7 +63,7 @@ git apply bun-termux-cwd.patch
 Jeżeli potrzebujesz poprawki HMR dekoratorów, użyj patcha dopasowanego do wersji źródeł. Dla Bun 1.4.4 dostępny jest wydzielony patch `bun-1.4.4-tc39-hmr.patch` (baza: commit `38afee6c84fcf48c0edb2466aa4b27d287a59c30`); nie nakładaj go na bazę 1.4.3 opisaną w tej sekcji.
 
 ```sh
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-runtime-patches/main/patches/bun-1.4.4-tc39-hmr.patch -o bun-1.4.4-tc39-hmr.patch
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.4-tc39-hmr.patch -o bun-1.4.4-tc39-hmr.patch
 # Ten patch wymaga checkoutu Bun 1.4.4, nie bazy 1.4.3 z tej strony.
 ```
 

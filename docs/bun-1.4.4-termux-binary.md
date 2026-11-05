@@ -6,7 +6,7 @@
 - **Platforma:** Android ARM64 / AArch64, API 28+ (Android 9+).
 - **Rozmiar pliku:** 113 290 272 bajty (ok. 108 MiB).
 - **SHA-256 binarki:** `af859b178246aac981f2c4f7d0dcbc1d04598cc061586075e6c2d4935b593ec7`.
-- **Build:** [GitHub Actions — run #3, zakończony sukcesem](https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41059523736).
+- **Build:** [GitHub Actions — run #3, zakończony sukcesem](https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736).
 - **Artefakt:** `bun-1.4.4-termux-aarch64`, ID `12980685769`.
 - **Wygaśnięcie artefaktu:** 29 listopada 2026 r. Artefakty Actions są tymczasowe.
 

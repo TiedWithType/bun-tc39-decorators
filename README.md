@@ -73,7 +73,7 @@ git clone https://github.com/oven-sh/bun.git bun-source
 cd bun-source
 git checkout 38afee6c84fcf48c0edb2466aa4b27d287a59c30
 
-curl -fL https://raw.githubusercontent.com/TiedWithType/bun-runtime-patches/main/patches/bun-1.4.4-tc39-hmr.patch \
+curl -fL https://raw.githubusercontent.com/TiedWithType/bun-tc39-decorators/main/patches/bun-1.4.4-tc39-hmr.patch \
   -o ../bun-1.4.4-tc39-hmr.patch
 
 git apply --check ../bun-1.4.4-tc39-hmr.patch
@@ -129,8 +129,8 @@ Repozytorium zawiera workflow:
 - `.github/workflows/publish-termux-release.yml` — publikuje zweryfikowany artefakt jako GitHub Release.
 
 W historii Actions:
-- [walidacja patchy Bun 1.4.4 — sukces](https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41064304099);
-- [build Bun 1.4.4 dla Termuksa ARM64 — sukces](https://github.com/TiedWithType/bun-runtime-patches/actions/runs/41059523736).
+- [walidacja patchy Bun 1.4.4 — sukces](https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41064304099);
+- [build Bun 1.4.4 dla Termuksa ARM64 — sukces](https://github.com/TiedWithType/bun-tc39-decorators/actions/runs/41059523736).
 
 Build Android ARM64 oraz kontrola formatu ELF zakończyły się powodzeniem. **Ta weryfikacja nie oznacza testu binarki na fizycznym telefonie Android** — uruchomienie na rzeczywistym urządzeniu pozostaje osobnym krokiem. Szczegóły, SHA-256 i instalacja: [`docs/bun-1.4.4-termux-binary.md`](docs/bun-1.4.4-termux-binary.md).
 
