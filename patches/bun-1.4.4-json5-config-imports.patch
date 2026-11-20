@@ -1,0 +1,58 @@
+diff --git a/src/bunfig/bunfig.rs b/src/bunfig/bunfig.rs
+index 0000000..0000000 100644
+--- a/src/bunfig/bunfig.rs
++++ b/src/bunfig/bunfig.rs
+@@ -15,5 +15,6 @@ use bun_alloc::Arena as Bump;
+ use bun_ast::{E, Expr, ExprTag, expr::Data as ExprData};
+ use bun_parsers::json as json_parser;
++use bun_parsers::json5::JSON5Parser;
+ use bun_parsers::toml::TOML;
+ 
+ use bun_install_types::NodeLinker::FromExprError;
+@@ -1179,6 +1180,7 @@ impl Bunfig {
+ 
+         let ext = source.path.name().ext;
+         let is_toml = ext.len() > 1 && &ext[1..] == b"toml";
++        let is_json5 = ext.len() > 1 && &ext[1..] == b"json5";
+ 
+         let expr = if is_toml {
+             match TOML::parse(source, log, &bump, true) {
+@@ -1197,6 +1199,23 @@ impl Bunfig {
+                     return Err(e.into());
+                 }
+             }
++        } else if is_json5 {
++            match JSON5Parser::parse(source, log, &bump) {
++                Ok(e) => e,
++                Err(e) => {
++                    if log.errors + log.warnings == log_count {
++                        log.add_error_opts(
++                            b"Failed to parse",
++                            bun_ast::ErrorOpts {
++                                source: Some(source),
++                                redact_sensitive_information: true,
++                                ..Default::default()
++                            },
++                        );
++                    }
++                    return Err(bun_parsers::Error::from(e).into());
++                }
++            }
+         } else {
+             match json_parser::parse_ts_config(source, log, &bump) {
+                 Ok(e) => e,
+@@ -1241,7 +1260,13 @@ impl Bunfig {
+         // parsing a module whose nodes live in the same store.
+         bun_ast::initialize_store();
+         let bump = Bump::borrowing_default();
+-        let file = TOML::parse(source, &mut bun_ast::Log::init(), &bump, true)?;
++        let mut log = bun_ast::Log::init();
++        let ext = source.path.name().ext;
++        let file = if ext.len() > 1 && &ext[1..] == b"json5" {
++            JSON5Parser::parse(source, &mut log, &bump).map_err(bun_parsers::Error::from)?
++        } else {
++            TOML::parse(source, &mut log, &bump, true)?
++        };
+         let security = file.get(b"install").and_then(|it| it.get(b"security"));
+         Ok(security.is_some_and(|it| it.get(b"scanner").is_some()))
+     }
