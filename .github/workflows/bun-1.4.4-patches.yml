@@ -46,6 +46,8 @@ jobs:
         run: |
           git apply --check ../patches-repo/patches/bun-1.4.4-termux-combined.patch
           git apply ../patches-repo/patches/bun-1.4.4-termux-combined.patch
+          git apply --check ../patches-repo/patches/bun-1.4.4-json5-config-imports.patch
+          git apply ../patches-repo/patches/bun-1.4.4-json5-config-imports.patch
           git diff --check
           git status --short
 
