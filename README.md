@@ -7,6 +7,13 @@ Zbiór poprawek dla [Bun](https://github.com/oven-sh/bun), skoncentrowany na:
 
 Repozytorium przechowuje patche źródłowe, workflow GitHub Actions, narzędzia diagnostyczne i raporty weryfikacji. Nie zawiera aplikacji demonstracyjnej ani kodu frontendowego.
 
+## Wersje patchy
+
+- **Bun 1.4.5 (aktualna):** [patch TC39 HMR](patches/bun-1.4.5-tc39-hmr.patch), [patch zbiorczy Termux](patches/bun-1.4.5-termux-combined.patch), [dokumentacja](docs/bun-1.4.5-patches.md).
+- **Bun 1.4.4 (historyczna):** zachowana bez zmian; nie nakładaj patchy z różnych wersji na jeden checkout.
+
+Baza 1.4.5: `a7733435cf40429e3b35c36072769df2052b80f1` (`bun-v1.4.5`). Pliki źródłowe dotykane przez patche 1.4.4 mają identyczne blob SHA w tagach 1.4.4 i 1.4.5; patche 1.4.5 usuwają nieaktualne metadane `index` i są sprawdzane na przypiętej bazie w CI.
+
 ## Najważniejsza poprawka: TC39 decorators w HMR
 
 **Wydzielony patch:** [`patches/bun-1.4.4-tc39-hmr.patch`](patches/bun-1.4.4-tc39-hmr.patch)
