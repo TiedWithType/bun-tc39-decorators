@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: termux-binary-1.4.5-${{ github.ref }}
@@ -120,3 +120,20 @@ jobs:
             bun-source/bun-termux-aarch64.sha256
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish GitHub release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: bun-v1.4.5-termux
+          name: Bun 1.4.5 — Termux ARM64
+          target_commitish: main
+          generate_release_notes: true
+          body: |
+            Bun 1.4.5 for Android ARM64 / Termux, built from upstream commit a7733435cf40429e3b35c36072769df2052b80f1 with the TiedWithType TC39 decorators, HMR, and Termux patch set applied.
+
+            Asset: `bun` (Android ARM64). SHA-256 is included alongside the binary.
+          files: |
+            bun-source/build/release/bun
+            bun-source/bun-termux-aarch64.sha256
+          fail_on_unmatched_files: true
